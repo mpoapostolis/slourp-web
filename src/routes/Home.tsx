@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Card from "../components/Card";
 import Chip from "../components/Chip";
 import qs from "query-string";
@@ -10,6 +10,7 @@ import ListItem from "../components/ListItem";
 import { useQuery } from "react-query";
 import { getTags } from "../api/tags";
 import Qr from "../components/QrReader";
+import { SET_POS } from "../provider/names";
 
 const variants = {
   initial: {
@@ -28,6 +29,12 @@ export default function Home() {
   const [scanQr, setScanQr] = useState(false);
   const params = qs.parse(history.location.search, { arrayFormat: "comma" });
   const _tags = (params.tags as string[]) ?? [];
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition((pos) => {
+      account.dispatch({ type: SET_POS, payload: pos.coords });
+    });
+  }, []); //eslint-disable-line
 
   const { data: tags = [] } = useQuery("tags", getTags, {
     staleTime: 15000,
@@ -54,7 +61,7 @@ export default function Home() {
 
   return (
     <div className="container px-5 mb-10 mx-auto">
-      <h1 className="text-2xl mt-5 text-gray-700 font-bold leading-none">
+      <h1 className="text-2xl mt-5 text-gray-600 font-bold leading-8">
         Καλώς ήρθες <br />
         <span role="img" aria-label="smiley-face">
           {account?.user_name && `${account?.user_name} 😊`}
@@ -63,16 +70,15 @@ export default function Home() {
       <br />
       <div className="flex border shadow-md rounded-lg w-full bg-white  text-gray-700 leading-tight focus:outline-none">
         <PopOver
-          className="appearance-none rounded-tl-md border-r-2 rounded-bl-md focus:outline-none  py-3 px-5 w-full h-full"
+          className="appearance-none rounded-tl-md border-r-2 rounded-bl-md focus:outline-none  w-full h-full"
           label={
             <input
-              className="focus:outline-none  w-full h-full"
+              className="focus:outline-none py-3 px-5  bg-transparent  w-full h-full"
               placeholder="Προίον 🛍️"
             />
           }
         >
           <ul>
-            <ListItem onClick={() => console.log("test1")}>test1</ListItem>
             <ListItem>test1</ListItem>
             <ListItem>test1</ListItem>
             <ListItem>test1</ListItem>
@@ -91,7 +97,7 @@ export default function Home() {
           }
         >
           <ul>
-            <ListItem onClick={() => console.log("test1")}>test1</ListItem>
+            <ListItem>κοντά μου </ListItem>
             <ListItem>test1</ListItem>
             <ListItem>test1</ListItem>
             <ListItem>test1</ListItem>

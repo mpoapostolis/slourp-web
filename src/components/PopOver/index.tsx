@@ -40,7 +40,7 @@ export default (props: Props) => {
           onClick={() => !props.stayOpen && togglePopOver()}
           className={`absolute border ${
             props.position ?? "left"
-          }-0 px-8 py-3 pt-8 shadow-md rounded-md mt-1 bg-white z-50 w-full`}
+          }-0 shadow-md rounded-md mt-1 bg-white z-50 w-full`}
         >
           {props.showClose && (
             <button

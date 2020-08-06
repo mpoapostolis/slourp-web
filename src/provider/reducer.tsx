@@ -1,4 +1,4 @@
-import { LOGIN, LOGOUT } from "./names";
+import { LOGIN, LOGOUT, SET_POS } from "./names";
 
 export const setKey = (payload: Record<string, any>) =>
   localStorage.setItem("slourp_client", JSON.stringify(payload));
@@ -35,6 +35,9 @@ export const initState: Store = loadKey() || {};
 
 function reducer(state: Store, action: Action) {
   switch (action.type) {
+    case SET_POS:
+      return { ...state, coords: action.payload };
+
     case LOGIN:
       setKey(action.payload);
       return { ...state, ...action.payload };

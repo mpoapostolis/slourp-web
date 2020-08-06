@@ -28,7 +28,7 @@ const Login = () => {
   >({
     user_name: undefined,
     password: undefined,
-    reapeat_password: undefined,
+    repeat_password: undefined,
     first_name: undefined,
     last_name: undefined,
     gender: "male",
@@ -83,7 +83,7 @@ const Login = () => {
       }
     >
       {view === "Συνδεση" ? (
-        <>
+        <div className="p-8">
           <input
             onChange={(evt) => setCreds({ user_name: evt.currentTarget.value })}
             className={inputClass}
@@ -110,7 +110,7 @@ const Login = () => {
           </button>
           <button
             onClick={() => setView("Εγγραφη")}
-            className="text-gray-500 w-full  focus:outline-none float-right text-xs"
+            className="text-gray-500 w-full  mb-4 focus:outline-none float-right text-xs"
           >
             <div>Δεν έχετε λογαριασμο</div>
             <div className="underline">
@@ -118,9 +118,9 @@ const Login = () => {
               <strong className="text-indigo-500">εδω</strong>
             </div>
           </button>
-        </>
+        </div>
       ) : (
-        <div key="new">
+        <div className="p-8" key="new">
           <input
             onChange={(evt) =>
               setRegisterInfo({ user_name: evt.currentTarget.value })
@@ -134,6 +134,7 @@ const Login = () => {
             onChange={(evt) =>
               setRegisterInfo({ password: evt.currentTarget.value })
             }
+            onBlur={() => setErr({})}
             autoComplete="new-password"
             className={getClass(err.password)}
             type="password"
@@ -141,13 +142,22 @@ const Login = () => {
             placeholder={err.password ?? "Κώδικος"}
           />
           <input
+            onBlur={() => {
+              if (registerInfo.repeat_password !== registerInfo.password) {
+                setRegisterInfo({ repeat_password: undefined });
+                setErr({
+                  repeat_password: "password are not match",
+                  password: "password are not match",
+                });
+              } else setErr({});
+            }}
             onChange={(evt) =>
-              setRegisterInfo({ reapeat_password: evt.currentTarget.value })
+              setRegisterInfo({ repeat_password: evt.currentTarget.value })
             }
-            className={getClass(err.reapeat_password)}
+            className={getClass(err.repeat_password)}
             type="password"
-            value={registerInfo.reapeat_password ?? ""}
-            placeholder={err.reapeat_password ?? "Επαλήθευση κωδικού"}
+            value={registerInfo.repeat_password ?? ""}
+            placeholder={err.repeat_password ?? "Επαλήθευση κωδικού"}
           />{" "}
           <input
             onChange={(evt) =>
@@ -182,14 +192,17 @@ const Login = () => {
             placeholder="Ημερομηνία γέννησης"
           />
           <button
-            onClick={() => _register(registerInfo)}
+            onClick={() => {
+              const { repeat_password, ...rest } = registerInfo;
+              _register(rest);
+            }}
             className="bg-indigo-500 mb-4 w-full focus:outline-none hover:bg-indigo-700 text-white font-bold py-1 rounded"
           >
             Εγγραφή
           </button>
           <button
             onClick={() => setView("Συνδεση")}
-            className="text-gray-500 w-full focus:outline-none  float-right text-xs"
+            className="text-gray-500 mb-8 w-full focus:outline-none  float-right text-xs"
           >
             <div>Έχετε ήδη λογαριασμό</div>
             <div className="underline">
