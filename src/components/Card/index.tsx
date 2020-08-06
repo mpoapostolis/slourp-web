@@ -7,10 +7,11 @@ type Props = {
   desc: string;
 } & HTMLProps<HTMLDivElement>;
 
-export default (props: Props) => (
+export default (_props: Props) => (
   <Link to="/id">
     <div className="relative cursor-pointer">
       <img
+        alt="cover"
         className="shadow-lg h-56 w-full object-cover relative rounded-lg"
         src="https://dummyimage.com/qvga"
       />

@@ -1,6 +1,6 @@
 import React from "react";
 import PopOver from "../PopOver";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAccount } from "../../provider";
 import { LOGIN } from "../../provider/names";
 import { useMutation } from "react-query";
@@ -10,11 +10,30 @@ import { login, register } from "../../api/users";
 
 type Rec = Record<string, any>;
 
+const inputClass =
+  "shadow mb-4 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline";
+
+const inputErrClass =
+  "border-red-500 placeholder-red-300 text-red-600 shadow mb-4 appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none ";
+
+const getClass = (hasErr?: string) => (hasErr ? inputErrClass : inputClass);
+
 const Login = () => {
   const [view, setView] = useState("Συνδεση");
   const setCreds = (obj: Rec) => _setCreds((s) => ({ ...s, ...obj }));
   const [creds, _setCreds] = useState<Record<string, string>>({});
-  const [registerInfo, _setRegisterInfo] = useState<Record<string, string>>({});
+  const [err, setErr] = useState<Record<string, string>>({});
+  const [registerInfo, _setRegisterInfo] = useState<
+    Record<string, string | undefined>
+  >({
+    user_name: undefined,
+    password: undefined,
+    reapeat_password: undefined,
+    first_name: undefined,
+    last_name: undefined,
+    gender: "male",
+    birthday: "1991-01-12",
+  });
   const setRegisterInfo = (obj: Rec) =>
     _setRegisterInfo((s) => ({ ...s, ...obj }));
   const account = useAccount();
@@ -41,7 +60,14 @@ const Login = () => {
   });
 
   const [_register] = useMutation(register, {
-    onSuccess: () => setView("Συνδεση"),
+    onSuccess: () => {
+      setErr({});
+      setView("Συνδεση");
+    },
+    onError: async (err: any) => {
+      const error = await err.response.json();
+      setErr(error);
+    },
   });
 
   return (
@@ -49,6 +75,7 @@ const Login = () => {
       showClose
       stayOpen
       position="right"
+      onCLose={() => setErr({})}
       label={
         <button className="focus:outline-none py-3 h-full uppercase tracking-wide text-xs text-indigo-600 font-bold">
           {view}
@@ -59,13 +86,13 @@ const Login = () => {
         <>
           <input
             onChange={(evt) => setCreds({ user_name: evt.currentTarget.value })}
-            className="shadow mb-4 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className={inputClass}
             type="text"
             placeholder="Όνομα χρήστη"
           />
           <input
             onChange={(evt) => setCreds({ password: evt.currentTarget.value })}
-            className="shadow mb-4 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className={inputClass}
             type="password"
             placeholder="Κώδικος"
           />
@@ -98,59 +125,62 @@ const Login = () => {
             onChange={(evt) =>
               setRegisterInfo({ user_name: evt.currentTarget.value })
             }
-            className="shadow mb-4 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className={getClass(err.user_name)}
             type="text"
-            placeholder="Όνομα χρήστη"
+            value={registerInfo.user_name ?? ""}
+            placeholder={err.user_name ?? "Όνομα χρήστη"}
           />
           <input
             onChange={(evt) =>
               setRegisterInfo({ password: evt.currentTarget.value })
             }
             autoComplete="new-password"
-            className="shadow mb-4 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className={getClass(err.password)}
             type="password"
-            placeholder="Κώδικος"
+            value={registerInfo.password ?? ""}
+            placeholder={err.password ?? "Κώδικος"}
           />
           <input
             onChange={(evt) =>
               setRegisterInfo({ reapeat_password: evt.currentTarget.value })
             }
-            className="shadow mb-4 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className={getClass(err.reapeat_password)}
             type="password"
-            placeholder="Επαλήθευση κωδικού"
-          />
+            value={registerInfo.reapeat_password ?? ""}
+            placeholder={err.reapeat_password ?? "Επαλήθευση κωδικού"}
+          />{" "}
           <input
             onChange={(evt) =>
               setRegisterInfo({ first_name: evt.currentTarget.value })
             }
-            className="shadow mb-4 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            placeholder="Όνομα"
+            className={getClass(err.first_name)}
+            value={registerInfo.first_name ?? ""}
+            placeholder={err.first_name ?? "Όνομα"}
           />
           <input
             onChange={(evt) =>
               setRegisterInfo({ last_name: evt.currentTarget.value })
             }
-            className="shadow mb-4 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            placeholder="Επώνυμο"
+            className={getClass(err.last_name)}
+            value={registerInfo.last_name ?? ""}
+            placeholder={err.last_name ?? "Επώνυμο"}
           />
-
           <select
             onChange={(evt) => setRegisterInfo({ gender: evt.target.value })}
+            value={registerInfo.gender}
             placeholder="Gender"
             className="shadow  bg-transparent mb-4 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           >
             <option value="male">Άντρας</option>
             <option value="female">Γύναικα</option>
           </select>
-
           <input
             onChange={(evt) => setRegisterInfo({ birthday: evt.target.value })}
-            className="shadow bg-transparent mb-4 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className={inputClass}
             type="date"
-            defaultValue={"1991-01-12"}
+            value={registerInfo.birthday ?? "1991-01-12"}
             placeholder="Ημερομηνία γέννησης"
           />
-
           <button
             onClick={() => _register(registerInfo)}
             className="bg-indigo-500 mb-4 w-full focus:outline-none hover:bg-indigo-700 text-white font-bold py-1 rounded"

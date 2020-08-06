@@ -3,7 +3,7 @@ import Header from "../components/Header";
 import { motion } from "framer-motion";
 import Routes from "../routes";
 
-const variants = {
+export const variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,

@@ -9,6 +9,7 @@ type Props = {
   stayOpen?: boolean;
   position?: "left" | "right";
   showClose?: boolean;
+  onCLose?: (e?: any) => void;
 };
 
 export default (props: Props) => {
@@ -18,11 +19,12 @@ export default (props: Props) => {
 
   function togglePopOver() {
     setOpen(!open);
+    if (!open) props?.onCLose?.();
   }
 
   useEffect(() => {
     if (!props.stayOpen) setOpen(false);
-  }, [clickOutside]);
+  }, [clickOutside, props.stayOpen]);
 
   return (
     <div ref={divRef} className={`relative w-full`}>
@@ -45,7 +47,9 @@ export default (props: Props) => {
               onClick={togglePopOver}
               className="absolute select-none right-0 top-0 mt-2 mr-2 text-xs "
             >
-              ✖️
+              <span role="img" aria-label="close">
+                ✖️
+              </span>
             </button>
           )}
           {props.children}

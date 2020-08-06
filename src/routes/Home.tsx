@@ -1,16 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import Card from "../components/Card";
 import Chip from "../components/Chip";
 import qs from "query-string";
 import { useAccount } from "../provider";
 import { useHistory } from "react-router-dom";
 import { motion } from "framer-motion";
-
 import PopOver from "../components/PopOver";
 import ListItem from "../components/ListItem";
 import { useQuery } from "react-query";
 import { getTags } from "../api/tags";
-import { queries } from "@testing-library/react";
+import Qr from "../components/QrReader";
 
 const variants = {
   initial: {
@@ -26,7 +25,7 @@ const variants = {
 export default function Home() {
   const account = useAccount();
   const history = useHistory();
-
+  const [scanQr, setScanQr] = useState(false);
   const params = qs.parse(history.location.search, { arrayFormat: "comma" });
   const _tags = (params.tags as string[]) ?? [];
 
@@ -56,10 +55,12 @@ export default function Home() {
   return (
     <div className="container px-5 mb-10 mx-auto">
       <h1 className="text-2xl mt-5 text-gray-700 font-bold leading-none">
-        Welcome <br /> {`${account?.user_name} 😊`}
+        Καλώς ήρθες <br />
+        <span role="img" aria-label="smiley-face">
+          {account?.user_name && `${account?.user_name} 😊`}
+        </span>
       </h1>
       <br />
-
       <div className="flex border shadow-md rounded-lg w-full bg-white  text-gray-700 leading-tight focus:outline-none">
         <PopOver
           className="appearance-none rounded-tl-md border-r-2 rounded-bl-md focus:outline-none  py-3 px-5 w-full h-full"
@@ -98,8 +99,13 @@ export default function Home() {
           </ul>
         </PopOver>
 
-        <button className="appearance-none px-3 py-2 focus:outline-none bg-transparent text-lg">
-          📷
+        <button
+          onClick={() => setScanQr(true)}
+          className="appearance-none px-3 py-2 focus:outline-none bg-transparent text-lg"
+        >
+          <span role="img" aria-label="camera">
+            📷
+          </span>
         </button>
       </div>
       <br />
@@ -115,7 +121,6 @@ export default function Home() {
         ))}
       </div>
       <br />
-
       <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {Array(10)
           .fill("")
@@ -135,6 +140,7 @@ export default function Home() {
             </motion.div>
           ))}
       </div>
+      {scanQr && <Qr onClose={() => setScanQr(false)} />}
     </div>
   );
 }

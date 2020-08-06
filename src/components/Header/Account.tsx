@@ -12,6 +12,7 @@ export default () => {
       label={
         account.avatar ? (
           <img
+            alt="avatar"
             src={account.avatar}
             className="-mt-2 border w-10 h-10 cursor-pointer select-none rounded-full bg-gray-400 flex items-center justify-center"
           />
