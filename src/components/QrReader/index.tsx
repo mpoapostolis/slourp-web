@@ -1,8 +1,7 @@
 import React from "react";
 import QrReader from "react-qr-reader";
 import { motion } from "framer-motion";
-
-import { variants } from "../../Layout";
+import { variants } from "../../routes";
 
 type Props = {
   onClose: () => void;
