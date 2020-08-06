@@ -14,16 +14,26 @@ export default () => {
           <img
             alt="avatar"
             src={account.avatar}
-            className="-mt-2 border w-10 h-10 cursor-pointer select-none rounded-full bg-gray-400 flex items-center justify-center"
+            className="-mt-2 border w-8 h-8 cursor-pointer select-none rounded-full bg-gray-400 flex items-center justify-center"
           />
         ) : (
-          <div className="-mt-2 border w-10 h-10 cursor-pointer select-none rounded-full bg-gray-400 flex items-center justify-center">
+          <div className="-mt-2 border w-8 h-8 cursor-pointer select-none rounded-full bg-gray-400 flex items-center justify-center">
             {account?.user_name[0].toUpperCase()}
           </div>
         )
       }
     >
-      <button onClick={logout}>Αποσύνδεση</button>
+      <div className="px-4 py-2 font-bold flex cursor-pointer items-center text-grey-300">
+        <img src="/images/loyalty.svg" alt="loyalty" className="w-6 mr-5" />
+        <strong>{account.loyalty_points}</strong> &nbsp; Slourps
+      </div>
+      <div
+        onClick={logout}
+        className="px-4 py-2 font-bold flex cursor-pointer items-center text-grey-300"
+      >
+        <img src="/images/logout.svg" alt="loyalty" className="w-6 h-4 mr-5" />
+        Αποσύνδεση
+      </div>
     </PopOver>
   );
 };

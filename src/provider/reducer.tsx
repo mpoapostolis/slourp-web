@@ -21,6 +21,7 @@ export type Store = {
   first_name?: string;
   last_name?: string;
   age?: number;
+  loyalty_points?: number;
   token?: string;
   refresh_token?: string;
   permissions?: string[];
