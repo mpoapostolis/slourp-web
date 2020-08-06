@@ -6,11 +6,20 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "framer-motion": "^2.3.0",
+    "ky": "^0.23.0",
+    "query-string": "^6.13.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1"
+    "react-query": "^2.5.13",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "3.4.1",
+    "tailwindcss": "^1.6.2"
   },
   "scripts": {
+    "build:tailwind": "tailwindcss build src/styles/tailwind.css -o src/styles/tailwind.output.css",
+    "prestart": "npm run build:tailwind",
+    "prebuild": "NODE_ENV=production npm run build:tailwind",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -30,5 +39,12 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/facebook-js-sdk": "^3.3.0",
+    "@types/react-router-dom": "^5.1.5",
+    "postcss-cli": "^7.1.1",
+    "purgecss": "^2.3.0",
+    "typescript": "^3.9.7"
   }
 }
