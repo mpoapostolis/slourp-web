@@ -31,6 +31,7 @@ export default function Home() {
   const _tags = (params.tags as string[]) ?? [];
 
   useEffect(() => {
+    console.log("");
     navigator.geolocation.getCurrentPosition((pos) => {
       account.dispatch({ type: SET_POS, payload: pos.coords });
     });

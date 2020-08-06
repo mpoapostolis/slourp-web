@@ -1,9 +1,8 @@
 import React from "react";
 
-import { Switch, Route, useLocation } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import Home from "./Home";
 import Favorites from "./Favorites";
-import { motion } from "framer-motion";
 
 export const variants = {
   hidden: { opacity: 0 },
@@ -23,18 +22,10 @@ export const variants = {
 };
 
 function MyApp() {
-  const location = useLocation();
   return (
-    <Switch location={location} key={location.key}>
-      <motion.main
-        initial="hidden"
-        animate="visible"
-        exit="exit"
-        variants={variants}
-      >
-        <Route path="/" exact component={Home} />
-        <Route path="/favorites" component={Favorites} />
-      </motion.main>
+    <Switch>
+      <Route path="/" exact component={Home} />
+      <Route path="/favorites" component={Favorites} />
     </Switch>
   );
 }

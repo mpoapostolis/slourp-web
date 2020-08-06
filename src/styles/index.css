@@ -5,6 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #f7fafc;
 }
 
 code {
@@ -12,10 +13,13 @@ code {
     monospace;
 }
 
-.hide__scroll_bar::-webkit-scrollbar {
-  display: none;
+body::-webkit-scrollbar {
+  width: 6px;
+  background: transparent;
 }
 
-* {
-  -webkit-tap-highlight-color: transparent;
+body::-webkit-scrollbar-thumb {
+  width: 4px;
+  background: rgb(169, 177, 184);
+  border-radius: 35px;
 }

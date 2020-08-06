@@ -1,13 +1,31 @@
 import React from "react";
 import { motion } from "framer-motion";
 import Card from "../components/Card";
-import { variants } from ".";
 
-function Favorites() {
+const variants = {
+  initial: {
+    y: "10vh",
+    opacity: 0,
+  },
+  animate: {
+    y: 0,
+    opacity: 1,
+  },
+};
+
+export default function Home() {
   return (
-    <div className="container px-5 mb-10 mx-auto">
+    <div className="container my-10 px-5 mx-auto">
+      <h1 className="text-2xl mt-5 text-gray-600 font-bold leading-8">
+        <span role="img" aria-label="heart-smiley-face">
+          🥰
+        </span>{" "}
+        &nbsp; Τα αγαπημένα μου
+      </h1>
+      <br />
+
       <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {Array(10)
+        {Array(20)
           .fill("")
           .map((_, idx) => (
             <motion.div
@@ -28,5 +46,3 @@ function Favorites() {
     </div>
   );
 }
-
-export default Favorites;

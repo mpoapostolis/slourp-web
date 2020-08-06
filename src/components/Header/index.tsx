@@ -11,7 +11,7 @@ const Header = () => {
     path === location.pathname ? "border-b-2 border-indigo-500" : "";
 
   return (
-    <nav className="bg-white z-50 px-8 sticky top-0 pt-2 shadow-md">
+    <nav className="bg-white mb-10 z-50 px-8 sticky top-0 pt-2 shadow-md">
       <div className="-mb-px text-gray-700 items-center flex justify-between">
         <img
           alt="logo"
