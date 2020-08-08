@@ -20,7 +20,7 @@ export async function getProducts(
   const params = qs.stringify({
     ...res,
     offset: 0,
-    limit: cursor * 10,
+    limit: cursor * 5,
   });
   return ky.get(`${URL}?${params}`).json();
 }

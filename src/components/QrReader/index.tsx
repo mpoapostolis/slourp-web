@@ -1,19 +1,13 @@
 import React from "react";
 import QrReader from "react-qr-reader";
-import { motion } from "framer-motion";
-import { variants } from "../../routes";
 
 type Props = {
   onClose: () => void;
 };
 function Qr(props: Props) {
   return (
-    <motion.div
+    <div
       onClick={props.onClose}
-      initial="hidden"
-      animate="visible"
-      exit="exit"
-      variants={variants}
       style={{ top: "0px", zIndex: 10000 }}
       className="fixed left-0 bg-black w-full flex h-full"
     >
@@ -30,7 +24,7 @@ function Qr(props: Props) {
           className="m-auto w-full"
         />
       </div>
-    </motion.div>
+    </div>
   );
 }
 export default Qr;

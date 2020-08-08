@@ -35,7 +35,9 @@ export default function Home() {
     });
   }, []); //eslint-disable-line
 
-  const { data: tags = [] } = useQuery("tags", getTags, {});
+  const { data: tags = [] } = useQuery("tags", getTags, {
+    staleTime: 15000,
+  });
   const { resolvedData: products, isFetching } = usePaginatedQuery(
     ["products", { ...params, cursor }],
     getProducts,
@@ -49,7 +51,9 @@ export default function Home() {
     }
   );
 
-  const { data: favorites = [] } = useQuery("favorites", getFavorites, {});
+  const { data: favorites = [] } = useQuery("favorites", getFavorites, {
+    staleTime: 15000,
+  });
 
   const [_deleteFavorite] = useMutation(deleteFavorite, {
     onSuccess: (_res, id) => {
@@ -90,9 +94,10 @@ export default function Home() {
   });
 
   useEffect(() => {
-    if (cursor < 5) setCursor((c) => c + 1);
-  }, [inView]);
-
+    if (inView) {
+      setCursor((c) => c + 1);
+    }
+  }, [inView]); //eslint-disable-line
   return (
     <div className="container px-5 mb-10 mx-auto">
       <h1 className="text-2xl mt-5 text-gray-600 font-bold leading-8">

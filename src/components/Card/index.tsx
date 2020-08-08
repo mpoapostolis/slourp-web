@@ -15,6 +15,7 @@ export default (
         <img
           src="https://images.unsplash.com/photo-1532667449560-72a95c8d381b"
           className="flex items-end justify-end h-56 w-full bg-cover object-cover"
+          alt="background-cover"
         />
         {props.favorite && (
           <div className="absolute shadow-md flex m-auto right-0 top-0 mr-3 bg-indigo-500 px-3 py-1 text-white rounded-bl-lg rounded-br-lg">
