@@ -1,8 +1,7 @@
 import React from "react";
 
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, useLocation } from "react-router-dom";
 import Home from "./Home";
-import Favorites from "./Favorites";
 
 export const variants = {
   hidden: { opacity: 0 },
@@ -22,11 +21,10 @@ export const variants = {
 };
 
 function MyApp() {
+  const location = useLocation();
   return (
-    <Switch>
+    <Switch key={location.pathname}>
       <Route path="/" exact component={Home} />
-      <Route path="/favorites" component={Favorites} />
-      <Route path="/cart" component={Favorites} />
     </Switch>
   );
 }

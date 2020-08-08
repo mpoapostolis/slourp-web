@@ -7,6 +7,7 @@ type Props = {
   label: React.ReactNode;
   className?: string;
   stayOpen?: boolean;
+  minWidth?: number;
   position?: "left" | "right";
   showClose?: boolean;
   onCLose?: (e?: any) => void;
@@ -36,11 +37,14 @@ export default (props: Props) => {
       </div>
       {open && (
         <div
-          style={{ minWidth: "256px", width: "100%" }}
+          style={{
+            maxHeight: "350px",
+            minWidth: props.minWidth ? `${props.minWidth}px` : "250px",
+          }}
           onClick={() => !props.stayOpen && togglePopOver()}
           className={`absolute border ${
             props.position ?? "left"
-          }-0 shadow-md rounded-md mt-1 bg-white z-50 w-full`}
+          }-0 shadow-md  overflow-y-auto rounded-md mt-1 bg-white z-50 w-full`}
         >
           {props.showClose && (
             <button
