@@ -37,12 +37,12 @@ const Header = () => {
             <span>Αγαπημενα</span>
           </Link>
           <Link
-            to={"/account"}
+            to={"/cart"}
             className={`no-underline text-grey-dark ${isActive(
-              "/account"
+              "/cart"
             )} uppercase tracking-wide font-bold text-xs py-3`}
           >
-            <span>Ρυθμισεις</span>
+            <span>Καροτσι</span>
           </Link>
         </div>
         <div className="flex">{account.token ? <Account /> : <Login />}</div>

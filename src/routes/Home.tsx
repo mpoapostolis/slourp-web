@@ -7,10 +7,17 @@ import { useHistory } from "react-router-dom";
 import { motion } from "framer-motion";
 import PopOver from "../components/PopOver";
 import ListItem from "../components/ListItem";
-import { useQuery } from "react-query";
+import { useQuery, useMutation, queryCache } from "react-query";
 import { getTags } from "../api/tags";
 import Qr from "../components/QrReader";
 import { SET_POS } from "../provider/names";
+import { getProducts, Product } from "../api/products";
+import {
+  getFavorites,
+  deleteFavorite,
+  addFavorite,
+  Favorite,
+} from "../api/favorites";
 
 const variants = {
   initial: {
@@ -21,6 +28,11 @@ const variants = {
     y: 0,
     opacity: 1,
   },
+};
+
+const defaultProducts = {
+  total: 0,
+  data: [],
 };
 
 export default function Home() {
@@ -40,6 +52,32 @@ export default function Home() {
   const { data: tags = [] } = useQuery("tags", getTags, {
     staleTime: 15000,
   });
+  const { data: products = defaultProducts } = useQuery(
+    ["products", {}],
+    getProducts,
+    {
+      staleTime: 15000,
+    }
+  );
+
+  const { data: favorites = [] } = useQuery("favorites", getFavorites, {});
+
+  const [_deleteFavorite] = useMutation(deleteFavorite, {
+    onSuccess: (res, id) => {
+      const tmp = favorites.filter((f) => f.product_id !== id);
+      queryCache.setQueryData("favorites", tmp);
+    },
+  });
+
+  const [_addFavorite] = useMutation(addFavorite, {
+    onSuccess: (res, id) => {
+      const product = { ...products.data.find((o) => o.id === id) } as any;
+      product.product_id = product.id;
+      queryCache.setQueryData("favorites", [...favorites, product]);
+    },
+  });
+
+  console.log(favorites);
 
   const push = (tags?: string[]) => {
     history.push({
@@ -129,23 +167,22 @@ export default function Home() {
       </div>
       <br />
       <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {Array(10)
-          .fill("")
-          .map((_, idx) => (
-            <motion.div
-              initial="initial"
-              animate="animate"
-              variants={variants}
-              transition={{ delay: 0.25 + idx * 0.1, duration: 0.125 }}
-              key={idx}
-            >
-              <Card
-                desc={
-                  "Με τον όρο Lorem ipsum αναφέρονται τα κείμενα εκείνα τα οποία είναι ακατάληπτα, δεν μπορεί δηλαδή κάποιος να βγάλει κάποιο λογικό νόημα από αυτά, και έχουν δημιουργηθεί με σκοπό να παρουσιάσουν στον αναγνώστη μόνο τα γραφιστικά χαρακτηριστικά, αυτά καθ' εαυτά, ενός κειμένου ή μιας οπτικής παρουσίασης και όχι να ."
-                }
-              />
-            </motion.div>
-          ))}
+        {products.data.map((obj, idx) => (
+          <motion.div
+            initial="initial"
+            animate="animate"
+            variants={variants}
+            transition={{ delay: 0.25 + idx * 0.1, duration: 0.125 }}
+            key={idx}
+          >
+            <Card
+              {...obj}
+              deleteFavorite={_deleteFavorite}
+              addFavorite={_addFavorite}
+              favorite={favorites.map((obj) => obj.product_id).includes(obj.id)}
+            />
+          </motion.div>
+        ))}
       </div>
       {scanQr && <Qr onClose={() => setScanQr(false)} />}
     </div>

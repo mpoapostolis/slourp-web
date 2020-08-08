@@ -1,6 +1,5 @@
 import React from "react";
 import { motion } from "framer-motion";
-import Card from "../components/Card";
 
 const variants = {
   initial: {
@@ -35,11 +34,11 @@ export default function Home() {
               transition={{ delay: 0.25 + idx * 0.1, duration: 0.125 }}
               key={idx}
             >
-              <Card
+              {/* <Card
                 desc={
                   "Με τον όρο Lorem ipsum αναφέρονται τα κείμενα εκείνα τα οποία είναι ακατάληπτα, δεν μπορεί δηλαδή κάποιος να βγάλει κάποιο λογικό νόημα από αυτά, και έχουν δημιουργηθεί με σκοπό να παρουσιάσουν στον αναγνώστη μόνο τα γραφιστικά χαρακτηριστικά, αυτά καθ' εαυτά, ενός κειμένου ή μιας οπτικής παρουσίασης και όχι να ."
                 }
-              />
+              /> */}
             </motion.div>
           ))}
       </div>

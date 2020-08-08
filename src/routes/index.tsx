@@ -26,6 +26,7 @@ function MyApp() {
     <Switch>
       <Route path="/" exact component={Home} />
       <Route path="/favorites" component={Favorites} />
+      <Route path="/cart" component={Favorites} />
     </Switch>
   );
 }

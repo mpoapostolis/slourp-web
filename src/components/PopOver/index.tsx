@@ -23,7 +23,7 @@ export default (props: Props) => {
   }
 
   useEffect(() => {
-    if (!props.stayOpen) setOpen(false);
+    setOpen(false);
   }, [clickOutside, props.stayOpen]);
 
   return (
