@@ -18,34 +18,38 @@ const Header = () => {
           src="/images/logo.png"
           className="w-20 hidden sm:block"
         />
-        <div className="-mb-px text-gray-700 flex">
-          <Link
-            to="/"
-            className={`no-underline text-teal-dark ${isActive(
-              "/"
-            )} uppercase tracking-wide font-bold text-xs py-3 sm:mr-8 mr-5`}
-          >
-            <span>Αρχικη</span>
-          </Link>
+        {account.token ? (
+          <div className="-mb-px text-gray-700 flex">
+            <Link
+              to="/"
+              className={`no-underline text-teal-dark ${isActive(
+                "/"
+              )} uppercase tracking-wide font-bold text-xs py-3 sm:mr-8 mr-5`}
+            >
+              <span>Αρχικη</span>
+            </Link>
 
-          <Link
-            to="/favorites"
-            className={`no-underline text-grey-dark ${isActive(
-              "/favorites"
-            )} uppercase tracking-wide font-bold text-xs py-3  sm:mr-8 mr-5`}
-          >
-            <span>Αγαπημενα</span>
-          </Link>
-          <Link
-            to={"/cart"}
-            className={`no-underline text-grey-dark ${isActive(
-              "/cart"
-            )} uppercase tracking-wide font-bold text-xs py-3`}
-          >
-            <span>Καροτσι</span>
-          </Link>
-        </div>
-        <div className="flex">{account.token ? <Account /> : <Login />}</div>
+            <Link
+              to="/favorites"
+              className={`no-underline text-grey-dark ${isActive(
+                "/favorites"
+              )} uppercase tracking-wide font-bold text-xs py-3  sm:mr-8 mr-5`}
+            >
+              <span>Αγαπημενα</span>
+            </Link>
+            <Link
+              to={"/cart"}
+              className={`no-underline text-grey-dark ${isActive(
+                "/cart"
+              )} uppercase tracking-wide font-bold text-xs py-3`}
+            >
+              <span>Καροτσι</span>
+            </Link>
+          </div>
+        ) : (
+          <div />
+        )}
+        <div className="flex ">{account.token ? <Account /> : <Login />}</div>
       </div>
     </nav>
   );

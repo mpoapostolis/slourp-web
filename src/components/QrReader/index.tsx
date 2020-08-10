@@ -3,6 +3,7 @@ import QrReader from "react-qr-reader";
 
 type Props = {
   onClose: () => void;
+  onScan: (str: string | null) => void;
 };
 function Qr(props: Props) {
   return (
@@ -20,7 +21,7 @@ function Qr(props: Props) {
         <QrReader
           delay={750}
           onError={console.log}
-          onScan={console.log}
+          onScan={props.onScan}
           className="m-auto w-full"
         />
       </div>

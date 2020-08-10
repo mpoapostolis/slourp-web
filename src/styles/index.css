@@ -24,3 +24,13 @@ code {
   background: rgb(169, 177, 184);
   border-radius: 35px;
 }
+
+.bgImgCover {
+  background: linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.8) 0%,
+    rgba(255, 255, 255, 0) 35%,
+    rgba(255, 255, 255, 0) 99.9%,
+    rgba(0, 0, 0, 0.6) 100%
+  );
+}

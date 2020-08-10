@@ -39,7 +39,7 @@ export default function Home() {
     staleTime: 15000,
   });
   const { resolvedData: products, isFetching } = usePaginatedQuery(
-    ["products", { ...params, cursor }],
+    ["products", { productSearchTerm: params.productSearchTerm, cursor }],
     getProducts,
     {
       staleTime: 15000,
@@ -51,8 +51,8 @@ export default function Home() {
     }
   );
 
-  const { data: favorites = [] } = useQuery("favorites", getFavorites, {
-    staleTime: 15000,
+  const { data: favorites = [] } = useQuery(["favorites"], getFavorites, {
+    enabled: account.token,
   });
 
   const [_deleteFavorite] = useMutation(deleteFavorite, {
@@ -98,6 +98,7 @@ export default function Home() {
       setCursor((c) => c + 1);
     }
   }, [inView]); //eslint-disable-line
+
   return (
     <div className="container px-5 mb-10 mx-auto">
       <h1 className="text-2xl mt-5 text-gray-600 font-bold leading-8">
@@ -109,19 +110,56 @@ export default function Home() {
       <br />
       <div className="flex border shadow-md rounded-lg w-full bg-white  text-gray-700 leading-tight focus:outline-none">
         <PopOver
+          position="right"
+          className="rounded-tl-md border-r-2 rounded-bl-md focus:outline-none  py-3 px-5 w-full h-full"
+          label={
+            <input
+              type="search"
+              value={params.storeSearchTerm || ""}
+              onChange={(evt) => {
+                pushQuery({
+                  storeSearchTerm: evt.currentTarget.value.length
+                    ? evt.currentTarget.value
+                    : undefined,
+                  storeId: evt.currentTarget.value.length
+                    ? params.storeId
+                    : undefined,
+                });
+              }}
+              className="focus:outline-none font-bold text-gray-600 w-full h-full"
+              placeholder="Κατάστημα 🏢"
+            />
+          }
+        >
+          <ul>
+            <ListItem>
+              <div className="flex">
+                <img
+                  className="w-5 h5 mr-4"
+                  src="/images/pin.svg"
+                  aria-label="location pin"
+                  alt="location"
+                />
+                <span>κοντά μου</span>
+              </div>
+            </ListItem>
+          </ul>
+        </PopOver>
+
+        <PopOver
           className="rounded-tl-md border-r-2 rounded-bl-md focus:outline-none  w-full h-full"
           label={
             <input
               type="search"
-              value={params.searchTerm || ""}
+              value={params.productSearchTerm || ""}
               onChange={(evt) =>
                 pushQuery({
-                  searchTerm: evt.currentTarget.value.length
+                  productSearchTerm: evt.currentTarget.value.length
                     ? evt.currentTarget.value
                     : undefined,
                 })
               }
-              className="focus:outline-none py-3 px-5  bg-transparent  w-full h-full"
+              className="focus:outline-none py-3 px-5 font-bold text-gray-600 bg-transparent  w-full h-full"
               placeholder="Προίον 🛍️"
             />
           }
@@ -131,7 +169,7 @@ export default function Home() {
               <ListItem
                 onClick={() =>
                   pushQuery({
-                    searchTerm: title,
+                    productSearchTerm: title,
                   })
                 }
                 key={title}
@@ -139,26 +177,6 @@ export default function Home() {
                 {title}
               </ListItem>
             ))}
-          </ul>
-        </PopOver>
-
-        <PopOver
-          position="right"
-          className="rounded-tl-md border-r-2 rounded-bl-md focus:outline-none  py-3 px-5 w-full h-full"
-          label={
-            <input
-              type="search"
-              className="focus:outline-none w-full h-full"
-              placeholder="Κατάστημα 🏢"
-            />
-          }
-        >
-          <ul>
-            <ListItem>κοντά μου </ListItem>
-            <ListItem>test1</ListItem>
-            <ListItem>test1</ListItem>
-            <ListItem>test1</ListItem>
-            <ListItem>test1</ListItem>
           </ul>
         </PopOver>
 
@@ -199,7 +217,18 @@ export default function Home() {
         {isFetching && <div className="spinner" />}
       </div>
 
-      {scanQr && <Qr onClose={() => setScanQr(false)} />}
+      {scanQr && (
+        <Qr
+          onScan={(str) => {
+            if (str) {
+              qs.parse(str);
+              pushQuery(qs.parse(str));
+              setScanQr(false);
+            }
+          }}
+          onClose={() => setScanQr(false)}
+        />
+      )}
     </div>
   );
 }

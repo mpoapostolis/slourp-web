@@ -3,7 +3,7 @@ import PopOver from "../PopOver";
 import { useState } from "react";
 import { useAccount } from "../../provider";
 import { LOGIN } from "../../provider/names";
-import { useMutation } from "react-query";
+import { useMutation, queryCache } from "react-query";
 
 import ky from "ky";
 import { login, register } from "../../api/users";
@@ -56,6 +56,7 @@ const Login = () => {
   const [_login] = useMutation(login, {
     onSuccess: (payload) => {
       account.dispatch({ type: LOGIN, payload });
+      queryCache.invalidateQueries("favorites");
     },
   });
 

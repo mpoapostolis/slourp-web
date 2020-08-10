@@ -2,10 +2,14 @@ import React from "react";
 import PopOver from "../PopOver";
 import { useAccount } from "../../provider";
 import { LOGOUT } from "../../provider/names";
+import { queryCache } from "react-query";
 
 export default () => {
   const account = useAccount();
-  const logout = () => account.dispatch({ type: LOGOUT });
+  const logout = () => {
+    queryCache.removeQueries("favorites");
+    account.dispatch({ type: LOGOUT });
+  };
   return (
     <PopOver
       position="right"

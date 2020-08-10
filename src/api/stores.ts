@@ -1,6 +1,6 @@
 import ky from "ky";
 import qs from "query-string";
-const URL = `/api/products/client`;
+const URL = `/api/stores/client`;
 
 export type Product = {
   id: string;
@@ -8,22 +8,18 @@ export type Product = {
   price: number;
   description: string;
   images: string;
-  address: string;
-  store_name: string;
-  coords: { x: number; y: string; name: string };
 };
 
 export type ProductResponse = { total: number; data: Product[] };
 
-export async function getProducts(
+export async function getStores(
   _key: string,
   _params: Record<string, any>
 ): Promise<ProductResponse> {
-  const { cursor, ...res } = _params;
   const params = qs.stringify({
-    ...res,
+    ..._params,
     offset: 0,
-    limit: cursor * 5,
+    limit: 5,
   });
   return ky.get(`${URL}?${params}`).json();
 }
