@@ -16,15 +16,18 @@ import {
 import { getTags } from "../api/tags";
 import Qr from "../components/QrReader";
 import { SET_POS } from "../provider/names";
-import { getProducts, ProductResponse } from "../api/products";
+import { getProducts, ProductResponse, Product } from "../api/products";
 import { getFavorites, deleteFavorite, addFavorite } from "../api/favorites";
 import { useInView } from "react-intersection-observer";
+import Modal from "../components/Modal";
 
 export default function Home() {
   const history = useHistory();
   const account = useAccount();
   const [cursor, setCursor] = useState(1);
   const [scanQr, setScanQr] = useState(false);
+  const [cartItems, setCartItem] = useState<Product[]>([]);
+  const [buyModal, setBuyModal] = useState(false);
   const [productSuggestion, setProductSuggestion] = useState<string[]>([]);
   const params = qs.parse(history.location.search, { arrayFormat: "comma" });
   const _tags = (params.tags as string[]) ?? [];
@@ -202,17 +205,32 @@ export default function Home() {
         ))}
       </div>
       <br />
-      <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {products?.data.map((obj, idx) => (
-          <Card
-            key={idx}
-            {...obj}
-            deleteFavorite={_deleteFavorite}
-            addFavorite={_addFavorite}
-            favorite={favorites.map((obj) => obj.product_id).includes(obj.id)}
-          />
-        ))}
-      </div>
+      {products?.total ? (
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {products?.data.map((obj, idx) => (
+            <Card
+              onBuyNow={(obj: Product) => {
+                setCartItem([obj]);
+                setBuyModal(true);
+              }}
+              onAddToCart={(obj: Product) =>
+                setCartItem((s) => s && [...s, obj])
+              }
+              key={idx}
+              {...obj}
+              deleteFavorite={_deleteFavorite}
+              addFavorite={_addFavorite}
+              favorite={favorites.map((obj) => obj.product_id).includes(obj.id)}
+            />
+          ))}
+        </div>
+      ) : (
+        <img
+          className="w-full h-full"
+          alt="not-found"
+          src="/images/not-found.svg"
+        />
+      )}
       <div ref={ref} className="flex w-full justify-center">
         {isFetching && <div className="spinner" />}
       </div>
@@ -229,6 +247,11 @@ export default function Home() {
           onClose={() => setScanQr(false)}
         />
       )}
+      <Modal
+        productList={cartItems}
+        onClose={() => setBuyModal(false)}
+        open={buyModal}
+      />
     </div>
   );
 }

@@ -73,6 +73,7 @@ const Login = () => {
 
   return (
     <PopOver
+      maxHeight={"600px"}
       showClose
       stayOpen
       position="right"

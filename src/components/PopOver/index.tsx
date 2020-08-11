@@ -10,6 +10,7 @@ type Props = {
   minWidth?: number;
   position?: "left" | "right";
   showClose?: boolean;
+  maxHeight?: string;
   onCLose?: (e?: any) => void;
 };
 
@@ -38,7 +39,7 @@ export default (props: Props) => {
       {open && (
         <div
           style={{
-            maxHeight: "350px",
+            maxHeight: props.maxHeight ?? "350px",
             minWidth: props.minWidth ? `${props.minWidth}px` : "250px",
           }}
           onClick={() => !props.stayOpen && togglePopOver()}

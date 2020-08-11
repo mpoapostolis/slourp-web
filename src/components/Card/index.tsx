@@ -9,6 +9,8 @@ export default (
     favorite: boolean;
     deleteFavorite: (id: string) => void;
     addFavorite: (id: string) => void;
+    onBuyNow?: (p: Product) => void;
+    onAddToCart: (p: Product) => void;
   }
 ) => {
   const account = useAccount();
@@ -35,7 +37,7 @@ export default (
             Αγαπημένο
           </div>
         )}
-        <div className="bgImgCover flex flex-col-reverse border top-0 left-0 pl-4 pb-2 text-white w-full z-30 h-full absolute">
+        <div className="bgImgCover flex flex-col-reverse top-0 left-0 pl-4 pb-2 text-white w-full z-30 h-full absolute">
           <span>{props.price}€</span>
           <h3 className="font-bold uppercase">{props.product_name}</h3>
         </div>
@@ -50,7 +52,7 @@ export default (
                 storeSearchTerm: props.store_name,
               })
             }
-            className="underline cursor-pointer"
+            className="underline cursor-pointer mr-4 w-full"
           >
             {props.store_name}
           </span>
@@ -73,11 +75,17 @@ export default (
       </div>
       {account.token && (
         <div className="w-full mt-5  px-3 flex justify-end">
-          <button className="hover:shadow focus:outline-none hover:bg-indigo-500 hover:text-white transition-all duration-100  bg-gray-300 rounded text-sm px-4 py-2 mr-2 text-gray-700 font-bold w-full">
+          <button
+            onClick={() => props?.onBuyNow?.(props)}
+            className="hover:shadow focus:outline-none hover:bg-indigo-500 hover:text-white transition-all duration-100  bg-gray-300 rounded text-sm px-4 py-2 mr-2 text-gray-700 font-bold w-full"
+          >
             Αγόρα Τώρα
           </button>
           {params.storeId && (
-            <button className="hover:shadow focus:outline-none transition-shadow bg-gray-300 rounded px-4 py-2 mr-2">
+            <button
+              onClick={() => props.onAddToCart(props)}
+              className="hover:shadow focus:outline-none transition-shadow bg-gray-300 rounded px-4 py-2 mr-2"
+            >
               <span role="img" aria-label="cart">
                 🛒
               </span>
