@@ -37,14 +37,6 @@ const Header = () => {
             >
               <span>Αγαπημενα</span>
             </Link>
-            <Link
-              to={"/cart"}
-              className={`no-underline text-grey-dark ${isActive(
-                "/cart"
-              )} uppercase tracking-wide font-bold text-xs py-3`}
-            >
-              <span>Καροτσι</span>
-            </Link>
           </div>
         ) : (
           <div />

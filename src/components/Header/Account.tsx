@@ -28,6 +28,15 @@ export default () => {
       }
     >
       <div className="px-4 py-2 font-bold flex cursor-pointer items-center text-grey-300">
+        <img
+          alt="avatar"
+          src={account.avatar}
+          className="w-6 mr-5 select-none rounded-full bg-gray-400 flex items-center justify-center"
+        />
+        <strong>{account.user_name}</strong>
+      </div>
+
+      <div className="px-4 py-2 font-bold flex cursor-pointer items-center text-grey-300">
         <img src="/images/loyalty.svg" alt="loyalty" className="w-6 mr-5" />
         <strong>{account.loyalty_points}</strong> &nbsp; Slourps
       </div>

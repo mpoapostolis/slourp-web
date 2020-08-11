@@ -15,8 +15,8 @@ import {
 } from "react-query";
 import { getTags } from "../api/tags";
 import Qr from "../components/QrReader";
-import { SET_POS } from "../provider/names";
-import { getProducts, ProductResponse, Product } from "../api/products";
+import { SET_POS, ADD_TO_CART, CLEAR_CART } from "../provider/names";
+import { getProducts, ProductResponse } from "../api/products";
 import { getFavorites, deleteFavorite, addFavorite } from "../api/favorites";
 import { useInView } from "react-intersection-observer";
 import Modal from "../components/Modal";
@@ -26,7 +26,7 @@ export default function Home() {
   const account = useAccount();
   const [cursor, setCursor] = useState(1);
   const [scanQr, setScanQr] = useState(false);
-  const [cartItems, setCartItem] = useState<Product[]>([]);
+
   const [buyModal, setBuyModal] = useState(false);
   const [productSuggestion, setProductSuggestion] = useState<string[]>([]);
   const params = qs.parse(history.location.search, { arrayFormat: "comma" });
@@ -41,6 +41,7 @@ export default function Home() {
   const { data: tags = [] } = useQuery("tags", getTags, {
     staleTime: 15000,
   });
+
   const { resolvedData: products, isFetching } = usePaginatedQuery(
     ["products", { productSearchTerm: params.productSearchTerm, cursor }],
     getProducts,
@@ -102,6 +103,8 @@ export default function Home() {
     }
   }, [inView]); //eslint-disable-line
 
+  console.log(account.cart);
+
   return (
     <div className="container px-5 mb-10 mx-auto">
       <h1 className="text-2xl mt-5 text-gray-600 font-bold leading-8">
@@ -113,7 +116,7 @@ export default function Home() {
       <br />
       <div className="flex border shadow-md rounded-lg w-full bg-white  text-gray-700 leading-tight focus:outline-none">
         <PopOver
-          position="right"
+          position="left"
           className="rounded-tl-md border-r-2 rounded-bl-md focus:outline-none  py-3 px-5 w-full h-full"
           label={
             <input
@@ -150,6 +153,7 @@ export default function Home() {
         </PopOver>
 
         <PopOver
+          position="right"
           className="rounded-tl-md border-r-2 rounded-bl-md focus:outline-none  w-full h-full"
           label={
             <input
@@ -209,13 +213,16 @@ export default function Home() {
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {products?.data.map((obj, idx) => (
             <Card
-              onBuyNow={(obj: Product) => {
-                setCartItem([obj]);
+              onBuyNow={() => {
+                account.dispatch({
+                  type: CLEAR_CART,
+                });
+                account.dispatch({
+                  type: ADD_TO_CART,
+                  payload: obj,
+                });
                 setBuyModal(true);
               }}
-              onAddToCart={(obj: Product) =>
-                setCartItem((s) => s && [...s, obj])
-              }
               key={idx}
               {...obj}
               deleteFavorite={_deleteFavorite}
@@ -247,11 +254,18 @@ export default function Home() {
           onClose={() => setScanQr(false)}
         />
       )}
-      <Modal
-        productList={cartItems}
-        onClose={() => setBuyModal(false)}
-        open={buyModal}
-      />
+      {account.cart && account.token && (
+        <div
+          onClick={() => setBuyModal(true)}
+          className="fixed z-50 bottom-0 cursor-pointer bg-white m-5 text-2xl shadow-lg rounded-full px-3 py-2 right-0"
+        >
+          <div className="font-bold -mt-4 -mr-1 right-0 w-6 h-6 flex items-center justify-center text-xs text-center absolute bg-red-500 text-white rounded-full ">
+            {account.cart.length}
+          </div>
+          🛒
+        </div>
+      )}
+      <Modal open={buyModal} onClose={() => setBuyModal(false)} />
     </div>
   );
 }

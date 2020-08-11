@@ -3,14 +3,14 @@ import { Product } from "../../api/products";
 import { useAccount } from "../../provider";
 import { useHistory } from "react-router-dom";
 import qs from "query-string";
+import { ADD_TO_CART } from "../../provider/names";
 
 export default (
   props: Product & {
     favorite: boolean;
     deleteFavorite: (id: string) => void;
     addFavorite: (id: string) => void;
-    onBuyNow?: (p: Product) => void;
-    onAddToCart: (p: Product) => void;
+    onBuyNow?: () => void;
   }
 ) => {
   const account = useAccount();
@@ -21,6 +21,17 @@ export default (
     history.push({
       search: qs.stringify({ ...params, ...obj }, { arrayFormat: "comma" }),
     });
+  };
+
+  const addToCart = () => {
+    const {
+      favorite,
+      deleteFavorite,
+      addFavorite,
+      onBuyNow,
+      ...product
+    } = props;
+    account.dispatch({ type: ADD_TO_CART, payload: product });
   };
 
   const favoriteIcon = props.favorite ? "💔" : "❤️";
@@ -76,14 +87,14 @@ export default (
       {account.token && (
         <div className="w-full mt-5  px-3 flex justify-end">
           <button
-            onClick={() => props?.onBuyNow?.(props)}
+            onClick={props?.onBuyNow}
             className="hover:shadow focus:outline-none hover:bg-indigo-500 hover:text-white transition-all duration-100  bg-gray-300 rounded text-sm px-4 py-2 mr-2 text-gray-700 font-bold w-full"
           >
             Αγόρα Τώρα
           </button>
           {params.storeId && (
             <button
-              onClick={() => props.onAddToCart(props)}
+              onClick={addToCart}
               className="hover:shadow focus:outline-none transition-shadow bg-gray-300 rounded px-4 py-2 mr-2"
             >
               <span role="img" aria-label="cart">

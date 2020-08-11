@@ -1,4 +1,5 @@
-import { LOGIN, LOGOUT, SET_POS } from "./names";
+import { LOGIN, LOGOUT, SET_POS, ADD_TO_CART, CLEAR_CART } from "./names";
+import { Product } from "../api/products";
 
 export const setKey = (payload: Record<string, any>) =>
   localStorage.setItem("slourp_client", JSON.stringify(payload));
@@ -25,6 +26,7 @@ export type Store = {
   token?: string;
   refresh_token?: string;
   permissions?: string[];
+  cart: Product[];
 };
 
 type Action = {
@@ -38,6 +40,11 @@ function reducer(state: Store, action: Action) {
   switch (action.type) {
     case SET_POS:
       return { ...state, coords: action.payload };
+    case ADD_TO_CART:
+      const { cart = [] } = state;
+      return { ...state, cart: [...cart, action.payload] };
+    case CLEAR_CART:
+      return { ...state, cart: [] };
 
     case LOGIN:
       setKey(action.payload);

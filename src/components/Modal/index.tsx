@@ -1,20 +1,34 @@
-import React, { useRef, useEffect } from "react";
-import { Product } from "../../api/products";
-import useClickOutside from "../../Hooks/useClickOutse";
+import React, { useRef, useMemo } from "react";
+import { useAccount } from "../../provider";
 
 type Props = {
   open: boolean;
   onClose: () => void;
-  productList?: Product[];
 };
 
 function Modal(props: Props) {
   const divRef = useRef(null);
-  const clickOutside = useClickOutside(divRef.current);
+  const account = useAccount();
 
-  useEffect(() => props.onClose(), [clickOutside]);
+  const uniqCartItems = useMemo(() => {
+    return new Set(
+      account.cart?.map((o) => ({
+        id: o.id,
+        product_name: o.product_name,
+        price: o.price,
+      }))
+    );
+  }, [account.cart]);
 
-  console.log(clickOutside);
+  const list: Record<string, { total: string; price: number }> = useMemo(() => {
+    return Array.from(uniqCartItems).reduce((acc, curr) => {
+      const total = account.cart.filter((obj) => obj.id === curr.id).length;
+      return {
+        ...acc,
+        [curr.product_name]: { total, price: total * curr.price },
+      };
+    }, {});
+  }, [uniqCartItems]);
 
   return props.open ? (
     <div className="fixed z-50 bottom-0 inset-x-0 px-4 pb-4 sm:inset-0 sm:flex sm:items-center sm:justify-center">
@@ -29,25 +43,65 @@ function Modal(props: Props) {
         aria-modal="true"
         aria-labelledby="modal-headline"
       >
-        <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-          <div className="sm:flex sm:items-start">
-            <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+        <div className="bg-white w-full px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+          <div className="sm:flex w-full sm:items-start">
+            <div className="mt-3 w-full sm:mt-0 sm:ml-4 text-left">
               <h3
-                className="text-lg leading-6 font-medium text-gray-900"
+                className="text-lg mb-2 leading-6 font-medium text-gray-900"
                 id="modal-headline"
               >
                 Επιβεβαίωση παραγγελίας
               </h3>
+              <hr className="w-full" />
 
-              <div className="mt-2">
-                {props?.productList?.map((obj) => (
-                  <h1>{obj.product_name}</h1>
+              <div className="mt-4">
+                {Object.keys(list).map((product_name) => (
+                  <div
+                    className="flex my-1 w-full text-sm items-center"
+                    key={product_name}
+                  >
+                    <h1>
+                      {product_name}{" "}
+                      <span className="text-xs text-gray-600">
+                        &nbsp; x{list[product_name].total}
+                      </span>
+                    </h1>
+
+                    <span className=" text-gray-800  ml-auto font-bold">
+                      {list[product_name].price.toFixed(2)}€
+                    </span>
+                    <div className="flex justify-end w-20">
+                      <button className="mx-1 w-6 h-6 border rounded-full text-xs ">
+                        <span role="img" className="text-xs" aria-label="plus">
+                          ➕
+                        </span>
+                      </button>
+
+                      <button className="w-6 h-6 border rounded-full text-xs ">
+                        <span role="img" className="text-xs" aria-label="minus">
+                          ➖
+                        </span>
+                      </button>
+                    </div>
+                  </div>
                 ))}
+
+                <div className="flex mb-2 mt-4 w-full text-sm items-center">
+                  <h1>Σύνολο</h1>
+                  <span className=" text-gray-800 ml-auto font-bold">
+                    {Object.keys(list)
+                      .reduce((acc, curr) => acc + list[curr].price, 0)
+                      .toFixed(2)}
+                    €
+                  </span>
+                  <span className="w-20" />
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div className="bg-gray-50 px-4 py-3 sm:px-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+        <div className="bg-gray-50 px-4 pb-3 pt-2 sm:px-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
           <span className="mt-3 flex items-center w-full rounded-md shadow-sm sm:mt-0">
             <button
               onClick={props.onClose}
