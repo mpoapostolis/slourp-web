@@ -20,6 +20,7 @@ import { getProducts, ProductResponse } from "../api/products";
 import { getFavorites, deleteFavorite, addFavorite } from "../api/favorites";
 import { useInView } from "react-intersection-observer";
 import Modal from "../components/Modal";
+import { getStores, StoreType, StoreReponse } from "../api/stores";
 
 export default function Home() {
   const history = useHistory();
@@ -28,7 +29,8 @@ export default function Home() {
   const [scanQr, setScanQr] = useState(false);
 
   const [buyModal, setBuyModal] = useState(false);
-  const [productSuggestion, setProductSuggestion] = useState<string[]>([]);
+  const [productSuggestions, setProductSuggestions] = useState<string[]>([]);
+  const [storeSuggestions, setStoreSuggestions] = useState<StoreType[]>([]);
   const params = qs.parse(history.location.search, { arrayFormat: "comma" });
   const _tags = (params.tags as string[]) ?? [];
 
@@ -48,10 +50,18 @@ export default function Home() {
     {
       staleTime: 15000,
       onSuccess: (res: ProductResponse) => {
-        setProductSuggestion(
+        setProductSuggestions(
           res.data.slice(0, 10).map((obj) => obj.product_name)
         );
       },
+    }
+  );
+
+  const { data: stores = [] } = useQuery(
+    ["products", { productSearchTerm: params.productSearchTerm }],
+    getStores,
+    {
+      onSuccess: (res: StoreReponse) => setStoreSuggestions(res.data),
     }
   );
 
@@ -135,7 +145,7 @@ export default function Home() {
           }
         >
           <ul>
-            {productSuggestion.map((title) => (
+            {productSuggestions.map((title) => (
               <ListItem
                 onClick={() =>
                   pushQuery({
@@ -183,6 +193,19 @@ export default function Home() {
                 <span>κοντά μου</span>
               </div>
             </ListItem>
+            {storeSuggestions.map((obj) => (
+              <ListItem
+                onClick={() =>
+                  pushQuery({
+                    storeSearchTerm: obj.name,
+                    storeId: obj.id,
+                  })
+                }
+                key={obj.id}
+              >
+                {obj.name}
+              </ListItem>
+            ))}
           </ul>
         </PopOver>
 
