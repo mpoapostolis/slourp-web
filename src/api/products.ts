@@ -9,6 +9,7 @@ export type Product = {
   description: string;
   images: string;
   address: string;
+  store_id: string;
   store_name: string;
   coords: { x: number; y: string; name: string };
 };

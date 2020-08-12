@@ -117,6 +117,40 @@ export default function Home() {
       <div className="flex border shadow-md rounded-lg w-full bg-white  text-gray-700 leading-tight focus:outline-none">
         <PopOver
           position="left"
+          className="rounded-tl-md border-r-2 rounded-bl-md focus:outline-none  w-full h-full"
+          label={
+            <input
+              type="search"
+              value={params.productSearchTerm || ""}
+              onChange={(evt) =>
+                pushQuery({
+                  productSearchTerm: evt.currentTarget.value.length
+                    ? evt.currentTarget.value
+                    : undefined,
+                })
+              }
+              className="focus:outline-none py-3 px-5 font-bold text-gray-600 bg-transparent  w-full h-full"
+              placeholder="Προίον 🛍️"
+            />
+          }
+        >
+          <ul>
+            {productSuggestion.map((title) => (
+              <ListItem
+                onClick={() =>
+                  pushQuery({
+                    productSearchTerm: title,
+                  })
+                }
+                key={title}
+              >
+                {title}
+              </ListItem>
+            ))}
+          </ul>
+        </PopOver>
+        <PopOver
+          position="right"
           className="rounded-tl-md border-r-2 rounded-bl-md focus:outline-none  py-3 px-5 w-full h-full"
           label={
             <input
@@ -149,41 +183,6 @@ export default function Home() {
                 <span>κοντά μου</span>
               </div>
             </ListItem>
-          </ul>
-        </PopOver>
-
-        <PopOver
-          position="right"
-          className="rounded-tl-md border-r-2 rounded-bl-md focus:outline-none  w-full h-full"
-          label={
-            <input
-              type="search"
-              value={params.productSearchTerm || ""}
-              onChange={(evt) =>
-                pushQuery({
-                  productSearchTerm: evt.currentTarget.value.length
-                    ? evt.currentTarget.value
-                    : undefined,
-                })
-              }
-              className="focus:outline-none py-3 px-5 font-bold text-gray-600 bg-transparent  w-full h-full"
-              placeholder="Προίον 🛍️"
-            />
-          }
-        >
-          <ul>
-            {productSuggestion.map((title) => (
-              <ListItem
-                onClick={() =>
-                  pushQuery({
-                    productSearchTerm: title,
-                  })
-                }
-                key={title}
-              >
-                {title}
-              </ListItem>
-            ))}
           </ul>
         </PopOver>
 
@@ -254,7 +253,7 @@ export default function Home() {
           onClose={() => setScanQr(false)}
         />
       )}
-      {account.cart && account.token && (
+      {account?.cart?.length && account.token && (
         <div
           onClick={() => setBuyModal(true)}
           className="fixed z-50 bottom-0 cursor-pointer bg-white m-5 text-2xl shadow-lg rounded-full px-3 py-2 right-0"

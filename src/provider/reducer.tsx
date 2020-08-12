@@ -1,4 +1,11 @@
-import { LOGIN, LOGOUT, SET_POS, ADD_TO_CART, CLEAR_CART } from "./names";
+import {
+  LOGIN,
+  LOGOUT,
+  SET_POS,
+  ADD_TO_CART,
+  CLEAR_CART,
+  REMOVE_FROM_CART,
+} from "./names";
 import { Product } from "../api/products";
 
 export const setKey = (payload: Record<string, any>) =>
@@ -43,6 +50,13 @@ function reducer(state: Store, action: Action) {
     case ADD_TO_CART:
       const { cart = [] } = state;
       return { ...state, cart: [...cart, action.payload] };
+
+    case REMOVE_FROM_CART:
+      return {
+        ...state,
+        cart: state.cart.filter((o) => o.id !== action.payload),
+      };
+
     case CLEAR_CART:
       return { ...state, cart: [] };
 

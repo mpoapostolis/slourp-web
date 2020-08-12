@@ -57,7 +57,7 @@ function Modal(props: Props) {
               <div className="mt-4">
                 {Object.keys(list).map((product_name) => (
                   <div
-                    className="flex my-1 w-full text-sm items-center"
+                    className="flex my-2 w-full text-sm items-center"
                     key={product_name}
                   >
                     <h1>
@@ -67,26 +67,27 @@ function Modal(props: Props) {
                       </span>
                     </h1>
 
-                    <span className=" text-gray-800  ml-auto font-bold">
+                    <span className="text-gray-800  ml-auto font-bold">
                       {list[product_name].price.toFixed(2)}€
                     </span>
                     <div className="flex justify-end w-20">
-                      <button className="mx-1 w-6 h-6 border rounded-full text-xs ">
+                      <button className="hover:bg-gray-200 mx-1 focus:outline-none w-6 h-6 border rounded-full text-xs ">
                         <span role="img" className="text-xs" aria-label="plus">
-                          ➕
+                          +
                         </span>
                       </button>
 
-                      <button className="w-6 h-6 border rounded-full text-xs ">
+                      <button className="hover:bg-gray-200 w-6 h-6 focus:outline-none border rounded-full text-xs ">
                         <span role="img" className="text-xs" aria-label="minus">
-                          ➖
+                          -
                         </span>
                       </button>
                     </div>
                   </div>
                 ))}
 
-                <div className="flex mb-2 mt-4 w-full text-sm items-center">
+                <hr className="my-3" />
+                <div className="flex mb-2  w-full text-sm items-center">
                   <h1>Σύνολο</h1>
                   <span className=" text-gray-800 ml-auto font-bold">
                     {Object.keys(list)
@@ -94,7 +95,6 @@ function Modal(props: Props) {
                       .toFixed(2)}
                     €
                   </span>
-                  <span className="w-20" />
                 </div>
               </div>
             </div>

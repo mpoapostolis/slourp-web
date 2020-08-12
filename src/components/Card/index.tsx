@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Product } from "../../api/products";
 import { useAccount } from "../../provider";
 import { useHistory } from "react-router-dom";
 import qs from "query-string";
-import { ADD_TO_CART } from "../../provider/names";
+import { ADD_TO_CART, REMOVE_FROM_CART } from "../../provider/names";
 
 export default (
   props: Product & {
@@ -34,6 +34,15 @@ export default (
     account.dispatch({ type: ADD_TO_CART, payload: product });
   };
 
+  const removeFromCart = () => {
+    account.dispatch({ type: REMOVE_FROM_CART, payload: props.id });
+  };
+
+  const isInCart = useMemo(
+    () => Boolean(account.cart?.filter((c) => c.id === props.id)?.length),
+    [account.cart]
+  );
+
   const favoriteIcon = props.favorite ? "💔" : "❤️";
   return (
     <div className="w-full pb-3 max-w-sm mx-auto shadow border rounded-lg overflow-hidden">
@@ -59,7 +68,7 @@ export default (
           <span
             onClick={() =>
               pushQuery({
-                storeId: props.id,
+                storeId: props.store_id,
                 storeSearchTerm: props.store_name,
               })
             }
@@ -93,14 +102,26 @@ export default (
             Αγόρα Τώρα
           </button>
           {params.storeId && (
-            <button
-              onClick={addToCart}
-              className="hover:shadow focus:outline-none transition-shadow bg-gray-300 rounded px-4 py-2 mr-2"
-            >
-              <span role="img" aria-label="cart">
-                🛒
-              </span>
-            </button>
+            <div className="relative">
+              {isInCart && (
+                <span
+                  role="img"
+                  aria-label="check"
+                  className="font-bold shadow -mt-3 -mr-1  right-0 w-6 h-6 flex items-center justify-center text-xs text-center absolute bg-green-500 text-white rounded-full "
+                >
+                  ✓{" "}
+                </span>
+              )}
+
+              <button
+                onClick={isInCart ? removeFromCart : addToCart}
+                className="hover:shadow focus:outline-none transition-shadow bg-gray-300 rounded px-4 py-2 mr-2"
+              >
+                <span role="img" aria-label="cart">
+                  🛒
+                </span>
+              </button>
+            </div>
           )}
           <button
             onClick={(evt) => {
