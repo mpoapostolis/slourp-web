@@ -34,6 +34,10 @@ export type Store = {
   refresh_token?: string;
   permissions?: string[];
   cart: Product[];
+  coords: {
+    latitude: number;
+    longitude: number;
+  };
 };
 
 type Action = {

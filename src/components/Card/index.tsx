@@ -40,7 +40,7 @@ export default (
 
   const isInCart = useMemo(
     () => Boolean(account.cart?.filter((c) => c.id === props.id)?.length),
-    [account.cart]
+    [account.cart, props.id]
   );
 
   const favoriteIcon = props.favorite ? "💔" : "❤️";

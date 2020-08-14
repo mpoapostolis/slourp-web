@@ -1,6 +1,6 @@
 import ky from "ky";
 import qs from "query-string";
-const URL = `/api/products/client`;
+const URL = `/api/products/client-products`;
 
 export type Product = {
   id: string;

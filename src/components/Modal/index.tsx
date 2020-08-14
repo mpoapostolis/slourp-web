@@ -1,34 +1,53 @@
-import React, { useRef, useMemo } from "react";
-import { useAccount } from "../../provider";
+import React, { useRef, useMemo, useEffect, useState } from "react";
+import { Product } from "../../api/products";
 
 type Props = {
   open: boolean;
   onClose: () => void;
+  productList: Product[];
 };
 
 function Modal(props: Props) {
   const divRef = useRef(null);
-  const account = useAccount();
+
+  const [myList, setMyList] = useState(props.productList);
+
+  useEffect(() => setMyList(props.productList), [props.productList]);
 
   const uniqCartItems = useMemo(() => {
     return new Set(
-      account.cart?.map((o) => ({
+      myList?.map((o) => ({
         id: o.id,
         product_name: o.product_name,
         price: o.price,
       }))
     );
-  }, [account.cart]);
+  }, [myList]);
 
-  const list: Record<string, { total: string; price: number }> = useMemo(() => {
+  const list: Record<
+    string,
+    { total: string; price: number; id: string }
+  > = useMemo(() => {
     return Array.from(uniqCartItems).reduce((acc, curr) => {
-      const total = account.cart.filter((obj) => obj.id === curr.id).length;
+      const total = myList.filter((obj) => obj.id === curr.id).length;
       return {
         ...acc,
-        [curr.product_name]: { total, price: total * curr.price },
+        [curr.product_name]: { total, price: total * curr.price, id: curr.id },
       };
     }, {});
-  }, [uniqCartItems]);
+  }, [uniqCartItems, myList]);
+
+  const removeProduct = (id: string) => {
+    const idx = myList.findIndex((o) => o.id === id);
+    const tmp = [...myList];
+    tmp.splice(idx, 1);
+    setMyList(tmp);
+  };
+
+  const duplicateProduct = (id: string) => {
+    const obj = myList.find((o) => o.id === id);
+    if (obj) setMyList([...myList, obj]);
+  };
 
   return props.open ? (
     <div className="fixed z-50 bottom-0 inset-x-0 px-4 pb-4 sm:inset-0 sm:flex sm:items-center sm:justify-center">
@@ -45,46 +64,81 @@ function Modal(props: Props) {
       >
         <div className="bg-white w-full px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
           <div className="sm:flex w-full sm:items-start">
-            <div className="mt-3 w-full sm:mt-0 sm:ml-4 text-left">
-              <h3
-                className="text-lg mb-2 leading-6 font-medium text-gray-900"
-                id="modal-headline"
-              >
-                Επιβεβαίωση παραγγελίας
-              </h3>
+            <div className="mt-3 w-full sm:mt-0 sm:ml-4 text-left ">
+              <div className="flex justify-between">
+                <h3
+                  className="text-lg mb-2 leading-6 font-medium text-gray-900"
+                  id="modal-headline"
+                >
+                  Επιβεβαίωση παραγγελίας
+                </h3>
+                <span
+                  role="img"
+                  className="text-xs cursor-pointer"
+                  onClick={props.onClose}
+                  aria-label="close"
+                >
+                  ✖️
+                </span>
+              </div>
+
               <hr className="w-full" />
 
               <div className="mt-4">
-                {Object.keys(list).map((product_name) => (
-                  <div
-                    className="flex my-2 w-full text-sm items-center"
-                    key={product_name}
-                  >
-                    <h1>
-                      {product_name}{" "}
-                      <span className="text-xs text-gray-600">
-                        &nbsp; x{list[product_name].total}
+                {Object.keys(list)
+                  .sort()
+                  .map((product_name) => (
+                    <div
+                      className="flex my-2 w-full text-sm items-center"
+                      key={product_name}
+                    >
+                      <h1>
+                        {product_name}{" "}
+                        <span className="text-xs text-gray-600">
+                          &nbsp; x{list[product_name].total}
+                        </span>
+                      </h1>
+
+                      <span className="text-gray-800  ml-auto font-bold">
+                        {list[product_name].price.toFixed(2)}€
                       </span>
-                    </h1>
+                      <div className="flex justify-end w-20">
+                        <button
+                          onClick={() =>
+                            duplicateProduct(list[product_name].id)
+                          }
+                          className="hover:bg-gray-200 mx-1 focus:outline-none w-6 h-6 border rounded-full text-xs "
+                        >
+                          <span
+                            role="img"
+                            className="text-xs"
+                            aria-label="plus"
+                          >
+                            +
+                          </span>
+                        </button>
 
-                    <span className="text-gray-800  ml-auto font-bold">
-                      {list[product_name].price.toFixed(2)}€
-                    </span>
-                    <div className="flex justify-end w-20">
-                      <button className="hover:bg-gray-200 mx-1 focus:outline-none w-6 h-6 border rounded-full text-xs ">
-                        <span role="img" className="text-xs" aria-label="plus">
-                          +
-                        </span>
-                      </button>
-
-                      <button className="hover:bg-gray-200 w-6 h-6 focus:outline-none border rounded-full text-xs ">
-                        <span role="img" className="text-xs" aria-label="minus">
-                          -
-                        </span>
-                      </button>
+                        <button
+                          disabled={Number(list[product_name].total) < 2}
+                          onClick={() => removeProduct(list[product_name].id)}
+                          className={` w-6 h-6 border focus:outline-none  rounded-full text-xs
+                        ${
+                          Number(list[product_name].total) < 2
+                            ? "text-gray-300 border-gray-200"
+                            : "border hover:bg-gray-200"
+                        }`}
+                        >
+                          <span
+                            role="img"
+                            className="text-xs"
+                            aria-label="minus"
+                          >
+                            -
+                          </span>
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
 
                 <hr className="my-3" />
                 <div className="flex mb-2  w-full text-sm items-center">

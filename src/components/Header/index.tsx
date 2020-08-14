@@ -13,11 +13,13 @@ const Header = () => {
   return (
     <nav className="bg-white mb-10 z-50 px-8 sticky top-0 pt-2 shadow-md">
       <div className="-mb-px text-gray-700 items-center flex justify-between">
-        <img
-          alt="logo"
-          src="/images/logo.png"
-          className="w-20 hidden sm:block"
-        />
+        <Link to="/">
+          <img
+            alt="logo"
+            src="/images/logo.png"
+            className="w-20 hidden sm:block"
+          />
+        </Link>
         {account.token ? (
           <div className="-mb-px text-gray-700 flex">
             <Link
