@@ -1,5 +1,7 @@
 import React, { useRef, useMemo, useEffect, useState } from "react";
 import { Product } from "../../api/products";
+import ky from "ky";
+import api from "../../ky";
 
 type Props = {
   open: boolean;
@@ -47,6 +49,13 @@ function Modal(props: Props) {
   const duplicateProduct = (id: string) => {
     const obj = myList.find((o) => o.id === id);
     if (obj) setMyList([...myList, obj]);
+  };
+
+  const payWithCash = () => {
+    api.post(`/api/place-order/4746e2a6-c49b-41f5-be38-11792ba591c0`, {
+      json: myList.map((o) => o.id),
+    });
+    props.onClose();
   };
 
   return props.open ? (
@@ -160,7 +169,7 @@ function Modal(props: Props) {
             <button
               onClick={props.onClose}
               type="button"
-              className="inline-flex border  justify-center w-full rounded-md px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+              className="inline-flex border opacity-25  justify-center w-full rounded-md px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
             >
               <img
                 src="/images/loyalty.svg"
@@ -173,7 +182,7 @@ function Modal(props: Props) {
 
           <span className="flex w-full  items-center rounded-md shadow-sm sm:mt-0">
             <button
-              onClick={props.onClose}
+              onClick={payWithCash}
               type="button"
               className="inline-flex border  justify-center w-full  rounded-md px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
             >

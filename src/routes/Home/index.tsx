@@ -114,9 +114,7 @@ export default function Home() {
         </span>
       </h1>
       <br />
-
       <Inputs />
-
       <br />
       <div className={`flex justify-start my-3 overflow-x-auto`}>
         {tags.map((obj, idx) => (
@@ -157,8 +155,7 @@ export default function Home() {
       <div ref={ref} className="flex w-full justify-center">
         {isFetching && <div className="spinner" />}
       </div>
-
-      {account?.cart?.length && account.token && params.storeId && (
+      {Boolean(account?.cart?.length) && account.token && params.storeId && (
         <div
           onClick={() => setProductList(account.cart)}
           className="fixed z-50 bottom-0 cursor-pointer bg-white m-5 text-2xl shadow-lg rounded-full px-3 py-2 right-0"
