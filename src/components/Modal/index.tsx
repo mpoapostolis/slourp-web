@@ -19,17 +19,17 @@ function Modal(props: Props) {
   useEffect(() => setMyList(props.productList), [props.productList]);
   useEffect(() => {
     if (orderId) setOrderId(undefined);
-  }, [props.open]);
+  }, [props.open]); // eslint-disable-line
 
-  // useQuery(Boolean(orderId) && ["get-status", orderId], getOrderStatus, {
-  //   refetchInterval: orderId ? 2000 : undefined,
-  //   onSuccess: (obj: StatusResponse) => {
-  //     if (obj.status === "complete") {
-  //       setOrderId(undefined);
-  //       props.onClose();
-  //     }
-  //   },
-  // });
+  useQuery(Boolean(orderId) && ["get-status", orderId], getOrderStatus, {
+    refetchInterval: orderId ? 2000 : undefined,
+    onSuccess: (obj: StatusResponse) => {
+      if (obj.status === "complete") {
+        setOrderId(undefined);
+        props.onClose();
+      }
+    },
+  });
 
   const uniqCartItems = useMemo(() => {
     return new Set(
