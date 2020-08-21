@@ -43,6 +43,7 @@ export default function Home() {
       "products",
       {
         productSearchTerm: params.productSearchTerm,
+        favorites: params.favorites,
         cursor,
         storeId: params.storeId,
       },
@@ -107,12 +108,44 @@ export default function Home() {
 
   return (
     <div className="container px-5 mb-10 mx-auto">
-      <h1 className="text-2xl mt-5 text-gray-600 font-bold leading-8">
-        Καλώς ήρθες <br />
-        <span role="img" aria-label="smiley-face">
-          {account?.user_name && `${account?.user_name} 😊`}
-        </span>
-      </h1>
+      <div className="flex justify-between">
+        <h1 className="text-2xl mt-5 text-gray-600 font-bold leading-8">
+          Καλώς ήρθες <br />
+          <span role="img" aria-label="smiley-face">
+            {account?.user_name && `${account?.user_name} 😊`}
+          </span>
+        </h1>
+        {account.token && (
+          <div className="mt-5">
+            <label className="flex items-center cursor-pointer">
+              <div className="relative">
+                <input
+                  id="toogleA"
+                  type="checkbox"
+                  checked={Boolean(params.favorites)}
+                  onChange={(e) =>
+                    pushQuery({
+                      favorites: params.favorites ? undefined : account.id,
+                      storeId: undefined,
+                      storeSearchTerm: undefined,
+                    })
+                  }
+                  className="hidden"
+                />
+                <div className="toggle__line w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                <div className="toggle__dot absolute w-6 h-6 bg-white rounded-full shadow inset-y-0 left-0"></div>
+              </div>
+              <span
+                className="ml-3 text-gray-600 font-medium"
+                role="img"
+                aria-label="smiley-face"
+              >
+                Αγαπημένα
+              </span>
+            </label>
+          </div>
+        )}
+      </div>
       <br />
       <Inputs />
       <br />

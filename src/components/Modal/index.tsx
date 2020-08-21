@@ -1,7 +1,8 @@
 import React, { useRef, useMemo, useEffect, useState } from "react";
 import { Product } from "../../api/products";
-import ky from "ky";
-import api from "../../ky";
+import { useMutation, useQuery } from "react-query";
+import { payWithCash, getOrderStatus, StatusResponse } from "../../api/orders";
+import { useAccount } from "../../provider";
 
 type Props = {
   open: boolean;
@@ -11,10 +12,24 @@ type Props = {
 
 function Modal(props: Props) {
   const divRef = useRef(null);
-
+  const account = useAccount();
   const [myList, setMyList] = useState(props.productList);
+  const [orderId, setOrderId] = useState<string>();
 
   useEffect(() => setMyList(props.productList), [props.productList]);
+  useEffect(() => {
+    if (orderId) setOrderId(undefined);
+  }, [props.open]);
+
+  // useQuery(Boolean(orderId) && ["get-status", orderId], getOrderStatus, {
+  //   refetchInterval: orderId ? 2000 : undefined,
+  //   onSuccess: (obj: StatusResponse) => {
+  //     if (obj.status === "complete") {
+  //       setOrderId(undefined);
+  //       props.onClose();
+  //     }
+  //   },
+  // });
 
   const uniqCartItems = useMemo(() => {
     return new Set(
@@ -51,12 +66,11 @@ function Modal(props: Props) {
     if (obj) setMyList([...myList, obj]);
   };
 
-  const payWithCash = () => {
-    api.post(`/api/place-order/4746e2a6-c49b-41f5-be38-11792ba591c0`, {
-      json: myList.map((o) => o.id),
-    });
-    props.onClose();
-  };
+  const [_payWithCash] = useMutation(payWithCash, {
+    onSuccess: (obj) => setOrderId(obj.order_id),
+  });
+
+  const disableClass = orderId ? "opacity-25" : "";
 
   return props.open ? (
     <div className="fixed z-50 bottom-0 inset-x-0 px-4 pb-4 sm:inset-0 sm:flex sm:items-center sm:justify-center">
@@ -163,13 +177,23 @@ function Modal(props: Props) {
             </div>
           </div>
         </div>
+        {orderId && (
+          <div className="flex w-full justify-center">
+            <div className="spinner" />
+          </div>
+        )}
 
-        <div className="bg-gray-50 px-4 pb-3 pt-2 sm:px-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div
+          className={`${disableClass} bg-gray-50 px-4 pb-3 pt-2 sm:px-6 grid grid-cols-1 sm:grid-cols-2 gap-3`}
+        >
           <span className="mt-3 flex items-center w-full rounded-md shadow-sm sm:mt-0">
             <button
+              disabled={Boolean(orderId)}
               onClick={props.onClose}
               type="button"
-              className="inline-flex border opacity-25  justify-center w-full rounded-md px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+              className={`${
+                !account.loyalty_points ? "opacity-25" : ""
+              } inline-flex border justify-center w-full rounded-md px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5`}
             >
               <img
                 src="/images/loyalty.svg"
@@ -182,7 +206,13 @@ function Modal(props: Props) {
 
           <span className="flex w-full  items-center rounded-md shadow-sm sm:mt-0">
             <button
-              onClick={payWithCash}
+              disabled={Boolean(orderId)}
+              onClick={() => {
+                _payWithCash({
+                  id: props.productList[0]?.store_id,
+                  myList: myList.map((o) => o.id),
+                });
+              }}
               type="button"
               className="inline-flex border  justify-center w-full  rounded-md px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
             >

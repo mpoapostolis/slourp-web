@@ -77,17 +77,19 @@ export default (
             {props.store_name}
           </span>
           <br />
-          <a
-            target="_"
-            href={`https://www.google.com/maps/dir/@//${props.coords.y},${props.coords.x}/@${props.coords.y},${props.coords.x},17z`}
-          >
-            <img
-              aria-label="location pin"
-              alt="location"
-              className="absolute w-6 right-0 top-0"
-              src="/images/pin.svg"
-            />
-          </a>
+          {props.coords && (
+            <a
+              target="_"
+              href={`https://www.google.com/maps/dir/@//${props.coords.y},${props.coords.x}/@${props.coords.y},${props.coords.x},17z`}
+            >
+              <img
+                aria-label="location pin"
+                alt="location"
+                className="absolute w-6 right-0 top-0"
+                src="/images/pin.svg"
+              />
+            </a>
+          )}
           <span className="text-gray-600 font-light text-xs ">
             {props.address}{" "}
           </span>

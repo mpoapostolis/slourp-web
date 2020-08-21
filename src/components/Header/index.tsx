@@ -31,14 +31,16 @@ const Header = () => {
               <span>Αρχικη</span>
             </Link>
 
-            <Link
-              to="/favorites"
-              className={`no-underline text-grey-dark ${isActive(
-                "/favorites"
-              )} uppercase tracking-wide font-bold text-xs py-3  sm:mr-8 mr-5`}
-            >
-              <span>Αγαπημενα</span>
-            </Link>
+            {account.token && (
+              <Link
+                to="/history"
+                className={`no-underline text-grey-dark ${isActive(
+                  "/history"
+                )} uppercase tracking-wide font-bold text-xs py-3  sm:mr-8 mr-5`}
+              >
+                <span>Ιστορικο</span>
+              </Link>
+            )}
           </div>
         ) : (
           <div />

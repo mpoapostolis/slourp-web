@@ -2,6 +2,7 @@ import React from "react";
 
 import { Switch, Route, useLocation } from "react-router-dom";
 import Home from "./Home";
+import History from "./History";
 
 export const variants = {
   hidden: { opacity: 0 },
@@ -25,6 +26,7 @@ function MyApp() {
   return (
     <Switch key={location.pathname}>
       <Route path="/" exact component={Home} />
+      <Route path="/history" exact component={History} />
     </Switch>
   );
 }

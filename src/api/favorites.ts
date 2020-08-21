@@ -7,6 +7,11 @@ export type Favorite = {
   price: number;
   product_id: string;
   product_name: string;
+  coords: { x: number; y: string; name: string };
+  id: string;
+  address: string;
+  store_id: string;
+  store_name: string;
 };
 
 export async function getFavorites(_key: string): Promise<Favorite[]> {

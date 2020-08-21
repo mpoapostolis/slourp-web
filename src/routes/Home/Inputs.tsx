@@ -82,6 +82,8 @@ function Inputs() {
                   pushQuery({
                     storeSearchTerm: "κοντά μου",
                     storeId: undefined,
+                    favorites: undefined,
+                    productSearchTerm: undefined,
                   })
                 }
                 className="flex"
@@ -101,6 +103,8 @@ function Inputs() {
                   pushQuery({
                     storeSearchTerm: obj.name,
                     storeId: obj.id,
+                    favorites: undefined,
+                    productSearchTerm: undefined,
                   })
                 }
                 key={obj.id}

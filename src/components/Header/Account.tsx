@@ -28,11 +28,17 @@ export default () => {
       }
     >
       <div className="px-4 py-2 font-bold flex cursor-pointer items-center text-grey-300">
-        <img
-          alt="avatar"
-          src={account.avatar}
-          className="w-6 mr-5 select-none rounded-full bg-gray-400 flex items-center justify-center"
-        />
+        {account.avatar ? (
+          <img
+            alt="avatar"
+            src={account.avatar}
+            className="w-6 mr-5 select-none rounded-full bg-gray-400 flex items-center justify-center"
+          />
+        ) : (
+          <div className="w-6 h-6 mr-5 text-xs select-none rounded-full bg-gray-400 flex items-center justify-center">
+            {account?.user_name[0].toUpperCase()}
+          </div>
+        )}
         <strong>{account.user_name}</strong>
       </div>
 

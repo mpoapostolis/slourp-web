@@ -21,7 +21,7 @@ const clearKey = (k: string) => {
 };
 
 export type Store = {
-  _id?: string;
+  id?: string;
   avatar?: string;
   user_name: string;
   store_id?: string;
