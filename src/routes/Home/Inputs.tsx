@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import qs from "query-string";
 import { useHistory } from "react-router-dom";
 import Qr from "../../components/QrReader";
@@ -7,13 +7,14 @@ import ListItem from "../../components/ListItem";
 import { useAccount } from "../../provider";
 import { usePaginatedQuery } from "react-query";
 import { getStores } from "../../api/stores";
+import { SET_POS } from "../../provider/names";
+import { toast } from "react-toastify";
 
 function Inputs() {
   const history = useHistory();
   const params = qs.parse(history.location.search, { arrayFormat: "comma" });
 
   const [scanQr, setScanQr] = useState(false);
-
   const account = useAccount();
 
   const pushQuery = (obj: Record<string, any>) => {
@@ -26,6 +27,32 @@ function Inputs() {
     ["stores", { storeSearchTerm: params.storeSearchTerm }],
     getStores
   );
+
+  const setPos = () => {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        account.dispatch({ type: SET_POS, payload: pos.coords });
+        pushQuery({
+          storeSearchTerm: "Μαγαζιά κοντά μου",
+          storeId: undefined,
+          productSearchTerm: undefined,
+          favorites: undefined,
+          latitude: pos.coords?.latitude,
+          longitude: pos.coords?.longitude,
+        });
+      },
+      (err) => toast.error(err.message)
+    );
+  };
+
+  const getPos = () => {
+    if (!params?.latitude || !params?.longitude) setPos();
+    else
+      pushQuery({
+        storeSearchTerm: "Μαγαζιά κοντά μου",
+        favorites: undefined,
+      });
+  };
 
   return (
     <>
@@ -49,16 +76,6 @@ function Inputs() {
           label={
             <input
               type="search"
-              onBlur={() =>
-                !params.storeId &&
-                params.searchTerm !== "κοντά μου" &&
-                pushQuery({
-                  storeSearchTerm: undefined,
-                  storeId: undefined,
-                  latitude: account.coords.latitude,
-                  longitude: account.coords.longitude,
-                })
-              }
               value={params.storeSearchTerm || ""}
               onChange={(evt) => {
                 pushQuery({
@@ -76,27 +93,18 @@ function Inputs() {
           }
         >
           <ul>
-            <ListItem>
-              <div
-                onClick={() =>
-                  pushQuery({
-                    storeSearchTerm: "κοντά μου",
-                    storeId: undefined,
-                    favorites: undefined,
-                    productSearchTerm: undefined,
-                  })
-                }
-                className="flex"
-              >
+            <ListItem onClick={getPos}>
+              <div className="flex">
                 <img
                   className="w-5 h5 mr-4"
                   src="/images/pin.svg"
                   aria-label="location pin"
                   alt="location"
                 />
-                <span>κοντά μου</span>
+                <span>Μαγαζιά κοντά μου</span>
               </div>
             </ListItem>
+            <hr />
             {stores?.data?.map((obj) => (
               <ListItem
                 onClick={() =>
@@ -105,6 +113,8 @@ function Inputs() {
                     storeId: obj.id,
                     favorites: undefined,
                     productSearchTerm: undefined,
+                    latitude: undefined,
+                    longitude: undefined,
                   })
                 }
                 key={obj.id}

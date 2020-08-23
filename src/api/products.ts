@@ -26,6 +26,5 @@ export async function getProducts(
     offset: 0,
     limit: cursor * 5,
   });
-  console.log(params);
   return ky.get(`${URL}?${params}`).json();
 }

@@ -47,7 +47,6 @@ const Login = () => {
       })
         .json()
         .then((payload) => {
-          console.log(payload);
           account.dispatch({ type: LOGIN, payload });
         });
     });

@@ -12,7 +12,7 @@ import {
   queryCache,
 } from "react-query";
 import { getTags } from "../../api/tags";
-import { SET_POS, CLEAR_CART } from "../../provider/names";
+import { CLEAR_CART } from "../../provider/names";
 import { getProducts, Product } from "../../api/products";
 import { getFavorites, deleteFavorite, addFavorite } from "../../api/favorites";
 import { useInView } from "react-intersection-observer";
@@ -27,12 +27,6 @@ export default function Home() {
   const [productList, setProductList] = useState<Product[]>([]);
   const params = qs.parse(history.location.search, { arrayFormat: "comma" });
   const _tags = (params.tags as string[]) ?? [];
-
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition((pos) => {
-      account.dispatch({ type: SET_POS, payload: pos.coords });
-    });
-  }, []); //eslint-disable-line
 
   const { data: tags = [] } = useQuery("tags", getTags, {
     staleTime: 15000,

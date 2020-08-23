@@ -70,6 +70,9 @@ export default (
               pushQuery({
                 storeId: props.store_id,
                 storeSearchTerm: props.store_name,
+                favorites: undefined,
+                latitude: undefined,
+                longitude: undefined,
               })
             }
             className="underline cursor-pointer mr-4 w-full"
