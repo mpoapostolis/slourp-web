@@ -1,7 +1,12 @@
 import React, { useRef, useMemo, useEffect, useState } from "react";
 import { Product } from "../../api/products";
 import { useMutation, useQuery, queryCache } from "react-query";
-import { payWithCash, getOrderStatus, StatusResponse } from "../../api/orders";
+import {
+  pay,
+  getOrderStatus,
+  StatusResponse,
+  PayResponse,
+} from "../../api/orders";
 import { useAccount } from "../../provider";
 import { getSlourps } from "../../api/users";
 import { UPDATE_LOYALTY_POINTS } from "../../provider/names";
@@ -24,10 +29,8 @@ function Modal(props: Props) {
   }, [props.open]); // eslint-disable-line
 
   useQuery("get-slourps", getSlourps, {
-    onSuccess: (obj: any) => {
-      console.log(obj);
-      account.dispatch({ type: UPDATE_LOYALTY_POINTS, payload: obj });
-    },
+    onSuccess: (obj: any) =>
+      account.dispatch({ type: UPDATE_LOYALTY_POINTS, payload: obj }),
   });
 
   useQuery(Boolean(orderId) && ["get-status", orderId], getOrderStatus, {
@@ -77,11 +80,19 @@ function Modal(props: Props) {
     if (obj) setMyList([...myList, obj]);
   };
 
-  const [_payWithCash] = useMutation(payWithCash, {
-    onSuccess: (obj) => setOrderId(obj.order_id),
+  const [_pay] = useMutation(pay, {
+    onSuccess: (obj: PayResponse) => setOrderId(obj.order_id),
   });
 
   const disableClass = orderId ? "opacity-25" : "";
+
+  const total = useMemo(
+    () => Object.keys(list).reduce((acc, curr) => acc + list[curr].price, 0),
+
+    [list]
+  );
+
+  console.log(list);
 
   return props.open ? (
     <div className="fixed z-50 bottom-0 inset-x-0 px-4 pb-4 sm:inset-0 sm:flex sm:items-center sm:justify-center">
@@ -175,14 +186,20 @@ function Modal(props: Props) {
                   ))}
 
                 <hr className="my-3" />
-                <div className="flex mb-2  w-full text-sm items-center">
+                <div className="flex mb-2  w-full text-sm items-start">
                   <h1>Σύνολο</h1>
-                  <span className=" text-gray-800 ml-auto font-bold">
-                    {Object.keys(list)
-                      .reduce((acc, curr) => acc + list[curr].price, 0)
-                      .toFixed(2)}
-                    €
-                  </span>
+                  <div className=" text-gray-800 flex flex-col items-end ml-auto font-bold">
+                    <div>{total.toFixed(2)}€</div>
+
+                    <div className="flex items-center">
+                      {(total * 90).toFixed(2)}{" "}
+                      <img
+                        src="/images/loyalty.svg"
+                        alt="loyalty"
+                        className="w-3 ml-2"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -200,10 +217,18 @@ function Modal(props: Props) {
           <span className="mt-3 flex items-center w-full rounded-md shadow-sm sm:mt-0">
             <button
               disabled={Boolean(orderId)}
-              onClick={props.onClose}
+              onClick={() => {
+                _pay({
+                  id: props.productList[0]?.store_id,
+                  myList: myList.map((o) => ({
+                    product_id: o.id,
+                    paid_with: "loyalty_points",
+                  })),
+                });
+              }}
               type="button"
               className={`${
-                !account.loyalty_points ? "opacity-25" : ""
+                (account.loyalty_points ?? 0) < total * 90 ? "opacity-25" : ""
               } inline-flex border justify-center w-full rounded-md px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5`}
             >
               <img
@@ -219,9 +244,12 @@ function Modal(props: Props) {
             <button
               disabled={Boolean(orderId)}
               onClick={() => {
-                _payWithCash({
+                _pay({
                   id: props.productList[0]?.store_id,
-                  myList: myList.map((o) => o.id),
+                  myList: myList.map((o) => ({
+                    product_id: o.id,
+                    paid_with: "cash",
+                  })),
                 });
               }}
               type="button"
