@@ -39,6 +39,7 @@ export default function Home() {
         productSearchTerm: params.productSearchTerm,
         favorites: params.favorites,
         cursor,
+        tags: params.tags,
         storeId: params.storeId,
       },
     ],
@@ -158,7 +159,7 @@ export default function Home() {
       {products?.total ? (
         <div
           className={`grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ${
-            isFetching ? "opacity-50" : ""
+            isFetching ? "opacity-75" : ""
           }`}
         >
           {products?.data.map((obj, idx) => (

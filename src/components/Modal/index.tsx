@@ -1,8 +1,10 @@
 import React, { useRef, useMemo, useEffect, useState } from "react";
 import { Product } from "../../api/products";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, queryCache } from "react-query";
 import { payWithCash, getOrderStatus, StatusResponse } from "../../api/orders";
 import { useAccount } from "../../provider";
+import { getSlourps } from "../../api/users";
+import { UPDATE_LOYALTY_POINTS } from "../../provider/names";
 
 type Props = {
   open: boolean;
@@ -21,11 +23,20 @@ function Modal(props: Props) {
     if (orderId) setOrderId(undefined);
   }, [props.open]); // eslint-disable-line
 
+  useQuery("get-slourps", getSlourps, {
+    onSuccess: (obj: any) => {
+      console.log(obj);
+      account.dispatch({ type: UPDATE_LOYALTY_POINTS, payload: obj });
+    },
+  });
+
   useQuery(Boolean(orderId) && ["get-status", orderId], getOrderStatus, {
     refetchInterval: orderId ? 2000 : undefined,
+    enabled: Boolean(orderId),
     onSuccess: (obj: StatusResponse) => {
       if (obj.status === "complete") {
         setOrderId(undefined);
+        queryCache.invalidateQueries("get-slourps");
         props.onClose();
       }
     },

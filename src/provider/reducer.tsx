@@ -5,6 +5,7 @@ import {
   ADD_TO_CART,
   CLEAR_CART,
   REMOVE_FROM_CART,
+  UPDATE_LOYALTY_POINTS,
 } from "./names";
 import { Product } from "../api/products";
 
@@ -60,6 +61,9 @@ function reducer(state: Store, action: Action) {
         ...state,
         cart: state.cart.filter((o) => o.id !== action.payload),
       };
+
+    case UPDATE_LOYALTY_POINTS:
+      return { ...state, loyalty_points: action.payload.loyalty_points };
 
     case CLEAR_CART:
       return { ...state, cart: [] };

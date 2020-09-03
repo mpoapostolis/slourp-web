@@ -98,6 +98,17 @@ export default (
           </span>
         </div>
       </div>
+
+      <div className="flex mx-3 h-8 overflow-y-hidden items-center overflow-x-auto">
+        {props.tags?.map((tag) => (
+          <div
+            key={tag}
+            className="px-3 h-6 py-1 text-2xs cursor-pointer bg-gray-300 text-gray-700 rounded-full mx-1"
+          >
+            {tag}
+          </div>
+        ))}
+      </div>
       {account.token && (
         <div className="w-full mt-5  px-3 flex justify-end">
           <button

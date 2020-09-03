@@ -1,4 +1,5 @@
 import ky from "ky";
+import api from "../ky";
 
 const URL = `/api/users`;
 
@@ -24,4 +25,10 @@ export async function register(data: Record<string, any>) {
       json: data,
     })
     .json();
+}
+
+export async function getSlourps(
+  _key: string
+): Promise<{ loyalty_points: number }> {
+  return api.get(`${URL}/get-slourps`).json();
 }

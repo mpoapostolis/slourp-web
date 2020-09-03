@@ -9,6 +9,7 @@ import { usePaginatedQuery } from "react-query";
 import { getStores } from "../../api/stores";
 import { SET_POS } from "../../provider/names";
 import { toast } from "react-toastify";
+import api from "../../ky";
 
 function Inputs() {
   const history = useHistory();
@@ -44,8 +45,13 @@ function Inputs() {
       (err) => toast.error(err.message)
     );
   };
-
   const getPos = () => {
+    api.post(`/api/geolog/${account.id}`, {
+      json: {
+        latitude: params.latitude,
+        longitude: params.longitude,
+      },
+    });
     if (!params?.latitude || !params?.longitude) setPos();
     else
       pushQuery({
