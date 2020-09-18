@@ -185,12 +185,32 @@ function Modal(props: Props) {
 
                 <hr className="my-3" />
                 <div className="flex mb-2  w-full text-sm items-start">
+                  <h1>Κερδίζεις</h1>
+                  <div className=" text-gray-800 flex flex-col items-end ml-auto font-bold">
+                    <div className="flex items-center">
+                      {(total * 10).toFixed(2)}{" "}
+                      <img
+                        src="/images/loyalty.svg"
+                        alt="loyalty"
+                        className="w-3 ml-2"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <hr className="my-3" />
+
+                <div className="flex mb-2  w-full text-sm items-start">
                   <h1>Σύνολο</h1>
                   <div className=" text-gray-800 flex flex-col items-end ml-auto font-bold">
-                    <div>{total.toFixed(2)}€</div>
+                    <div>
+                      {total.toFixed(2)}€
+                      <span className="w-6 ml-3" role="img" aria-label="money">
+                        💵
+                      </span>
+                    </div>
 
                     <div className="flex items-center">
-                      {(total * 300).toFixed(2)}{" "}
+                      {(total * 100).toFixed(2)}{" "}
                       <img
                         src="/images/loyalty.svg"
                         alt="loyalty"
@@ -226,7 +246,7 @@ function Modal(props: Props) {
               }}
               type="button"
               className={`${
-                (account.loyalty_points ?? 0) < total * 300 ? "opacity-25" : ""
+                (account.loyalty_points ?? 0) < total * 100 ? "opacity-25" : ""
               } inline-flex border justify-center w-full rounded-md px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5`}
             >
               <img

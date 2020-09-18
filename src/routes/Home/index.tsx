@@ -158,17 +158,15 @@ export default function Home() {
         ))}
       </div>
       {Boolean(_tags.length) && (
-        <span className="text-gray-700">
+        <span className="pl-3 text-gray-700">
           <strong>Επιλεγένα</strong>:{" "}
           {(Array.isArray(_tags) ? _tags : [_tags]).length}
         </span>
       )}
-      <br />
+      <div className="my-2" />
       {products?.total ? (
         <div
-          className={`grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ${
-            isFetching ? "opacity-75" : ""
-          }`}
+          className={`grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4`}
         >
           {products?.data.map((obj, idx) => (
             <Card
