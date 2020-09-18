@@ -8,6 +8,7 @@ import {
   UPDATE_LOYALTY_POINTS,
 } from "./names";
 import { Product } from "../api/products";
+import JwtDecode from "jwt-decode";
 
 export const setKey = (payload: Record<string, any>) =>
   localStorage.setItem("slourp_client", JSON.stringify(payload));
@@ -35,6 +36,9 @@ export type Store = {
   refresh_token?: string;
   permissions?: string[];
   cart: Product[];
+  expToken?: number;
+  expRToken?: number;
+
   coords: {
     latitude: number;
     longitude: number;
@@ -69,8 +73,19 @@ function reducer(state: Store, action: Action) {
       return { ...state, cart: [] };
 
     case LOGIN:
-      setKey(action.payload);
-      return { ...state, ...action.payload };
+      const { exp: expToken } = JwtDecode(action?.payload?.token);
+      const { exp: expRToken } = JwtDecode(action?.payload.refresh_token);
+      setKey({
+        ...action.payload,
+        expToken: expToken * 1000,
+        expRToken: expRToken * 1000,
+      });
+      return {
+        ...state,
+        ...action.payload,
+        expToken: expToken * 1000,
+        expRToken: expRToken * 1000,
+      };
     case LOGOUT:
       clearKey("slourp_client");
       return undefined;

@@ -18,6 +18,7 @@ import { getFavorites, deleteFavorite, addFavorite } from "../../api/favorites";
 import { useInView } from "react-intersection-observer";
 import Modal from "../../components/Modal";
 import Inputs from "./Inputs";
+import PageNoResult from "../../components/PageNoResult";
 
 export default function Home() {
   const history = useHistory();
@@ -100,7 +101,6 @@ export default function Home() {
       setCursor((c) => c + 1);
     }
   }, [inView]); //eslint-disable-line
-
   return (
     <div className="container px-5 mb-10 mx-auto">
       <div className="flex justify-between">
@@ -143,7 +143,9 @@ export default function Home() {
       </div>
       <br />
       <Inputs />
+
       <br />
+
       <div className={`flex justify-start my-3 overflow-x-auto`}>
         {tags.map((obj, idx) => (
           <Chip
@@ -155,6 +157,12 @@ export default function Home() {
           </Chip>
         ))}
       </div>
+      {Boolean(_tags.length) && (
+        <span className="text-gray-700">
+          <strong>Επιλεγένα</strong>:{" "}
+          {(Array.isArray(_tags) ? _tags : [_tags]).length}
+        </span>
+      )}
       <br />
       {products?.total ? (
         <div
@@ -174,11 +182,7 @@ export default function Home() {
           ))}
         </div>
       ) : (
-        <img
-          className="w-full h-full"
-          alt="not-found"
-          src="/images/not-found.svg"
-        />
+        <PageNoResult />
       )}
       <div ref={ref} className="flex w-full justify-center">
         {isFetching && <div className="spinner" />}

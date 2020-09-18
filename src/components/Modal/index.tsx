@@ -92,8 +92,6 @@ function Modal(props: Props) {
     [list]
   );
 
-  console.log(list);
-
   return props.open ? (
     <div className="fixed z-50 bottom-0 inset-x-0 px-4 pb-4 sm:inset-0 sm:flex sm:items-center sm:justify-center">
       <div className="fixed inset-0 transition-opacity">
@@ -192,7 +190,7 @@ function Modal(props: Props) {
                     <div>{total.toFixed(2)}€</div>
 
                     <div className="flex items-center">
-                      {(total * 90).toFixed(2)}{" "}
+                      {(total * 300).toFixed(2)}{" "}
                       <img
                         src="/images/loyalty.svg"
                         alt="loyalty"
@@ -228,7 +226,7 @@ function Modal(props: Props) {
               }}
               type="button"
               className={`${
-                (account.loyalty_points ?? 0) < total * 90 ? "opacity-25" : ""
+                (account.loyalty_points ?? 0) < total * 300 ? "opacity-25" : ""
               } inline-flex border justify-center w-full rounded-md px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5`}
             >
               <img

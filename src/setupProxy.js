@@ -9,6 +9,12 @@ module.exports = function (app) {
       changeOrigin: true,
       secure: false,
       logLevel: "debug",
+    }),
+    proxy("/uploads", {
+      target,
+      changeOrigin: true,
+      secure: false,
+      logLevel: "debug",
     })
   );
 };

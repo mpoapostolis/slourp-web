@@ -44,12 +44,15 @@ export default (
   );
 
   const favoriteIcon = props.favorite ? "💔" : "❤️";
+  const imgUrl = props.images
+    ? `/uploads/${props?.images}`
+    : `/images/image.png`;
   return (
     <div className="w-full pb-3 max-w-sm mx-auto shadow border rounded-lg overflow-hidden">
       <div className="relative">
         <img
-          src="https://source.unsplash.com/random"
-          className="flex items-end justify-end h-56 w-full bg-cover object-cover"
+          src={imgUrl}
+          className="flex items-end justify-end h-56 w-full bg-cover "
           alt="background-cover"
         />
         {props.favorite && (

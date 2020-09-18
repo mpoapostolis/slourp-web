@@ -76,6 +76,7 @@ function Inputs() {
           className="focus:outline-none rounded-tl-md border-r-2 rounded-bl-md  py-3 px-5 font-bold text-gray-600 bg-transparent  w-full h-full"
           placeholder="Προίον 🛍️"
         />
+
         <PopOver
           position="right"
           className="rounded-tl-md border-r-2 rounded-bl-md focus:outline-none  py-3 px-5 w-full h-full"
