@@ -163,6 +163,7 @@ export default function Home() {
           {(Array.isArray(_tags) ? _tags : [_tags]).length}
         </span>
       )}
+      <br />
       <div className="my-2" />
       {products?.total ? (
         <div

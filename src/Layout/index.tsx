@@ -8,6 +8,7 @@ import { LOGOUT } from "../provider/names";
 
 export default () => {
   const account = useAccount();
+
   useEffect(() => {
     window.addEventListener("__logout", () => {
       account.dispatch({ type: LOGOUT });
@@ -15,7 +16,8 @@ export default () => {
     return () => {
       window.removeEventListener("__logout", () => void 0);
     };
-  }, []);
+  }, []); //eslint-disable-line
+
   return (
     <>
       <Header />
